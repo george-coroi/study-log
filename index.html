@@ -1375,10 +1375,12 @@
     });
   }
 
-  /* ---------- focus sound: noise made in the browser, nothing downloaded ---------- */
+  /* ---------- focus sound: rain and fire are real recordings (sounds/, CC0 from OpenGameArt); white and brown noise are made in the browser ---------- */
   var SOUNDS = [['white', 'White'], ['rain', 'Rain'], ['brown', 'Brown'], ['fire', 'Fire']];
-  var SOUND_GAIN = { white: 0.3, rain: 0.5, brown: 0.55, fire: 0.55 };
-  var snd = { kind: 'off', src: null, gain: null, timer: 0 };
+  var SOUND_GAIN = { white: 0.3, rain: 0.6, brown: 0.55, fire: 0.8 };
+  var SAMPLE_FILE = { rain: 'sounds/rain.mp3', fire: 'sounds/fire.ogg' };
+  var samples = {}, sndToken = 0;
+  var snd = { kind: 'off', srcs: [], gain: null };
   function soundVol() { return Math.min(1, Math.max(0, Number(S.ui.volume) / 100 || 0)); }
   function noiseBuf(brown) {
     var n = audioCtx.sampleRate * 4, buf = audioCtx.createBuffer(1, n, audioCtx.sampleRate), d = buf.getChannelData(0), last = 0;
@@ -1388,19 +1390,40 @@
     }
     return buf;
   }
-  function stopSound() {
-    clearInterval(snd.timer);
-    try { if (snd.src) snd.src.stop(); } catch (e) {}
-    try { if (snd.gain) snd.gain.disconnect(); } catch (e) {}
-    snd.src = snd.gain = null; snd.kind = 'off';
+  function loadSample(kind) {   // resolves to an AudioBuffer, or null when the file cannot be loaded (e.g. opened from a file)
+    if (!samples[kind]) samples[kind] = fetch(SAMPLE_FILE[kind]).then(function (r) { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+      .then(function (a) { return new Promise(function (ok, no) { audioCtx.decodeAudioData(a, ok, no); }); })
+      .catch(function () { delete samples[kind]; return null; });
+    return samples[kind];
   }
-  function crackle() {                                                      // a short pop for the fire sound
-    if (!audioCtx || !snd.gain) return;
-    var len = Math.floor(audioCtx.sampleRate * 0.03), b = audioCtx.createBuffer(1, len, audioCtx.sampleRate), d = b.getChannelData(0);
-    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-    var s = audioCtx.createBufferSource(), f = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
-    f.type = 'highpass'; f.frequency.value = 1500 + Math.random() * 2500; g.gain.value = 0.25 + Math.random() * 0.6;
-    s.buffer = b; s.connect(f); f.connect(g); g.connect(snd.gain); s.start();
+  function stopSound() {
+    sndToken++;
+    snd.srcs.forEach(function (s) { try { s.stop(); } catch (e) {} });
+    try { if (snd.gain) snd.gain.disconnect(); } catch (e) {}
+    snd.srcs = []; snd.gain = null; snd.kind = 'off';
+  }
+  function startSample(kind, buf) {   // fire plays the short loop twice at different speeds, so the pattern does not repeat obviously
+    var gain = audioCtx.createGain(); gain.gain.value = soundVol() * SOUND_GAIN[kind]; gain.connect(audioCtx.destination);
+    (kind === 'fire' ? [1, 0.83] : [1]).forEach(function (rate, i) {
+      var src = audioCtx.createBufferSource(), g = audioCtx.createGain();
+      src.buffer = buf; src.loop = true; src.playbackRate.value = rate; g.gain.value = i ? 0.7 : 1;
+      src.connect(g); g.connect(gain); src.start(0, Math.random() * buf.duration); snd.srcs.push(src);
+    });
+    snd.gain = gain;
+  }
+  function startNoise(kind) {   // the built-in fallback for rain and fire, and the real thing for white and brown
+    var src = audioCtx.createBufferSource(), gain = audioCtx.createGain(), node = src, f;
+    src.buffer = noiseBuf(kind === 'brown' || kind === 'fire'); src.loop = true;
+    if (kind === 'rain') {
+      var hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 700;
+      f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 4500;
+      src.connect(hp); hp.connect(f); node = f;
+    } else if (kind === 'fire') {
+      f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900; src.connect(f); node = f;
+    }
+    node.connect(gain); gain.connect(audioCtx.destination);
+    gain.gain.value = soundVol() * (kind === 'rain' ? 0.5 : kind === 'fire' ? 0.55 : SOUND_GAIN[kind]);
+    src.start(); snd.srcs.push(src); snd.gain = gain;
   }
   function setSound(kind) {
     stopSound();
@@ -1408,19 +1431,14 @@
       unlockAudio();
       if (!audioCtx) toast('This browser cannot play sound.');
       else try {
-        var src = audioCtx.createBufferSource(), gain = audioCtx.createGain(), node = src, f;
-        src.buffer = noiseBuf(kind === 'brown' || kind === 'fire'); src.loop = true;
-        if (kind === 'rain') {                                             // hiss with the lows and highs trimmed
-          var hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 700;
-          f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 4500;
-          src.connect(hp); hp.connect(f); node = f;
-        } else if (kind === 'fire') {                                      // low rumble plus crackles
-          f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900; src.connect(f); node = f;
-        }
-        node.connect(gain); gain.connect(audioCtx.destination);
-        gain.gain.value = soundVol() * SOUND_GAIN[kind];
-        src.start(); snd.src = src; snd.gain = gain; snd.kind = kind;
-        if (kind === 'fire') snd.timer = setInterval(function () { if (Math.random() < 0.7) crackle(); }, 140);
+        snd.kind = kind;
+        if (SAMPLE_FILE[kind]) {
+          var mine = sndToken;
+          loadSample(kind).then(function (buf) {
+            if (mine !== sndToken) return;               // the person switched sound while it loaded
+            try { if (buf) startSample(kind, buf); else startNoise(kind); } catch (e) { stopSound(); renderSound(); toast('This browser could not start the sound.'); }
+          });
+        } else startNoise(kind);
       } catch (e) { stopSound(); toast('This browser could not start the sound.'); }
     }
     renderSound();
