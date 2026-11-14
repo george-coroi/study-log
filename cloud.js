@@ -21,7 +21,7 @@
     if (!user) return Promise.resolve();
     var json = JSON.stringify(window.studyLogData());
     if (json === lastSent) return Promise.resolve();
-    var now = Date.now();
+    var now = Date.now(); timer = null;
     return db.collection('users').doc(user.uid).set({ data: json, updatedAt: now }).then(function () {
       lastSent = json; try { localStorage.setItem(tsKey(), String(now)); } catch (e) {}
     }).catch(function () { note.textContent = 'Could not save to your account just now. It is still saved on this device.'; });
@@ -37,6 +37,9 @@
       } else { lastSent = ''; return upload(); }
     });
   }
+
+  // Coming back to this tab (or opening it on another device): fetch anything newer, unless a change here is still waiting to be saved.
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && user && !timer) pull().catch(function () {}); });
 
   window.studyLogCloud = {
     changed: function () {
