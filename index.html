@@ -3,12 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Study log</title>
+<title>Orbit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Pixelify+Sans:wght@500;600&display=swap">
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/app.css">
+<style>
+  /* Habits tab */
+  .orbit-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; max-width: 15rem; }
+  .orbit-week .wtile { aspect-ratio: auto; height: 24px; border: 0; padding: 0; cursor: pointer; }
+  .orbit-week .wtile.off { background: transparent; box-shadow: inset 0 0 0 1px var(--fill); cursor: default; }
+  #habit-sky { max-width: 20rem; }
+  .orbit-days { display: grid; gap: var(--s-3); }
+  .orbit-card { display: grid; gap: var(--s-3); }
+</style>
 </head>
 <body>
 
@@ -20,6 +29,8 @@
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
   <symbol id="i-sidebar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9.5 4.5v15"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v6a4 4 0 0 1-8 0zM8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3M12 14v4M8.5 20h7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(-25 12 12)"/></symbol>
   <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></symbol>
 </svg>
 
@@ -28,13 +39,15 @@
 <div class="app" id="app">
   <aside class="sidebar" aria-label="Main">
     <div class="side-top">
-      <span class="brand"><svg viewBox="0 0 9 6" aria-hidden="true" shape-rendering="crispEdges"><path fill="var(--accent)" d="M0 0h1v1h-1zM1 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM0 1h1v1h-1zM1 1h1v1h-1zM2 1h1v1h-1zM4 1h1v1h-1zM6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM1 5h1v1h-1zM7 5h1v1h-1z"/></svg><span class="lbl">Study log</span></span>
+      <span class="brand"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="var(--accent)" d="M2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM1 1h1v1h-1zM2 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM0 2h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM0 5h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1z"/><path fill="var(--bg)" d="M2 4h1v1h-1zM5 4h1v1h-1z"/><path fill="var(--accent)" opacity=".55" d="M6 1h1v1h-1z"/></svg><span class="lbl">Orbit</span></span>
       <button type="button" class="icon-btn" id="collapse" aria-label="Collapse sidebar" title="Collapse sidebar"><svg class="ic"><use href="#i-sidebar"/></svg></button>
     </div>
     <nav class="nav-list" id="mainnav" aria-label="Sections">
       <button type="button" class="nav-item" data-view="study" title="Study"><svg class="ic"><use href="#i-clock"/></svg><span class="lbl">Study</span></button>
       <button type="button" class="nav-item" data-view="tasks" title="Tasks"><svg class="ic"><use href="#i-check"/></svg><span class="lbl">Tasks</span></button>
       <button type="button" class="nav-item" data-view="topics" title="Topics"><svg class="ic"><use href="#i-book"/></svg><span class="lbl">Topics</span></button>
+      <button type="button" class="nav-item" data-view="plan" title="Plan"><svg class="ic"><use href="#i-cal"/></svg><span class="lbl">Plan</span></button>
+      <button type="button" class="nav-item" data-view="orbit" title="Habits"><svg class="ic"><use href="#i-orbit"/></svg><span class="lbl">Habits</span></button>
       <button type="button" class="nav-item" data-view="grades" title="Grades"><svg class="ic"><use href="#i-trophy"/></svg><span class="lbl">Grades</span></button>
       <button type="button" class="nav-item" data-view="stats" title="Stats"><svg class="ic"><use href="#i-chart"/></svg><span class="lbl">Stats</span></button>
     </nav>
@@ -86,6 +99,11 @@
             <div class="block pad">
               <div class="label">Studied today</div>
               <div class="stat" id="today-big">0m</div>
+            </div>
+            <div class="block pad">
+              <div class="label">Study streak</div>
+              <div class="stat" id="streak-big">0 days</div>
+              <p class="note" id="streak-note"></p>
             </div>
             <div>
               <h2>Sessions today</h2>
@@ -147,6 +165,49 @@
             <button type="button" class="btn" id="topic-edit" aria-pressed="false">Edit list</button>
           </div>
           <div id="topic-list"></div>
+        </div>
+      </section>
+
+      <!-- ================= PLAN ================= -->
+      <section id="view-plan" data-page="plan" hidden>
+        <header class="page-head"><h1>Plan</h1><p class="sub">Your revision week. Slots repeat every week and the ticks reset on Monday.</p></header>
+        <div class="stack">
+          <form class="task-form" id="plan-form">
+            <div class="field"><label class="label" for="plan-day">Day</label><select id="plan-day"></select></div>
+            <div class="field"><label class="label" for="plan-subject">Subject</label><select id="plan-subject"></select></div>
+            <div class="field"><label class="label" for="plan-text">What</label><input type="text" id="plan-text" maxlength="120" autocomplete="off" placeholder="Topic or task"></div>
+            <div class="field"><label class="label" for="plan-mins">Minutes</label><input type="number" id="plan-mins" min="5" max="240" step="5" value="30"></div>
+            <button type="submit" class="btn primary" id="plan-add">Add slot</button>
+          </form>
+          <div class="block pad" id="plan-suggest-box" hidden>
+            <div class="label">Suggested to revise</div>
+            <p class="note">Based on how well you know a topic and when you last revised it. Added to the day chosen above.</p>
+            <ul id="plan-suggest"></ul>
+          </div>
+          <div id="plan-days" class="stack"></div>
+        </div>
+      </section>
+
+      <!-- ================= ORBIT ================= -->
+      <section id="view-orbit" data-page="orbit" hidden>
+        <header class="page-head"><h1>Habits</h1><p class="sub">Habits you keep coming back to. Tick them off each day and watch your constellation fill in.</p></header>
+        <div class="stack">
+          <form id="habit-form" class="stack">
+            <div class="task-form personal">
+              <div class="field"><label class="label" for="habit-name">New habit</label><input type="text" id="habit-name" maxlength="80" autocomplete="off" placeholder="Read, sleep by 11, stretch"></div>
+              <button type="submit" class="btn primary" id="habit-add" disabled>Add habit</button>
+            </div>
+            <div><span class="label" id="habit-days-label">Days</span><div class="seg" id="habit-days" role="group" aria-labelledby="habit-days-label"></div></div>
+          </form>
+          <div>
+            <h2>Today</h2>
+            <div class="block"><ul id="habit-today"></ul></div>
+          </div>
+          <div id="habit-sky-box" hidden>
+            <h2>Constellation</h2>
+            <div class="block pad"><div class="wmap" id="habit-sky"></div><p class="note" style="margin-top:var(--s-3)">The last five weeks. A brighter square means more of that day's habits were done.</p></div>
+          </div>
+          <div class="orbit-days" id="habit-cards"></div>
         </div>
       </section>
 
@@ -276,8 +337,18 @@
           <div>
             <h2>Keyboard</h2>
             <div class="block pad">
-              <p class="note">Space starts the timer, 1 to 6 switch pages, N adds a task, P changes the colour theme. Press ? any time to see them all.</p>
+              <p class="note">Space starts the timer, 1 to 8 switch pages, N adds a task, P changes the colour theme. Press ? any time to see them all.</p>
               <div style="margin-top:var(--s-3)"><button type="button" class="btn" id="keys-open">Show shortcuts</button></div>
+            </div>
+          </div>
+          <div id="account" hidden>
+            <h2>Account</h2>
+            <div class="block pad">
+              <p class="note" id="account-note">Sign in with Google to keep your study log on every device. Only you can read it.</p>
+              <div class="row-between" style="margin-top:var(--s-4); justify-content:flex-start">
+                <button type="button" class="btn primary" id="sign-in">Sign in with Google</button>
+                <button type="button" class="btn" id="sign-out" hidden>Sign out</button>
+              </div>
             </div>
           </div>
           <div>
@@ -328,6 +399,7 @@
       <label class="vol"><span class="label">Volume</span><input type="range" id="snd-vol" min="0" max="100" step="5"></label>
     </section>
     <div class="block tree-card"><canvas id="tree" class="tree" role="img" aria-label="An orange bonsai tree with petals blowing in the wind"></canvas></div>
+    <div class="block tree-card"><canvas id="blob" class="blob" role="img" aria-label="Orbit, a pixel moon blob. It sleeps at night, blinks and hops by day, and a small dot circles it."></canvas></div>
     <section class="block side-card" aria-labelledby="gd-h">
       <h2 id="gd-h">Topic garden</h2>
       <canvas id="garden" class="garden" role="img" aria-label="One flower per science: taller means more confident, more lit petals means more topics rated Confident or better"></canvas>
@@ -358,7 +430,7 @@
   <div class="sheet-head"><h2 id="keys-title">Keyboard shortcuts</h2><button type="button" class="x" id="keys-close" aria-label="Close">&times;</button></div>
   <dl class="keys">
     <dt><kbd>Space</kbd></dt><dd>Start or pause the timer</dd>
-    <dt><kbd>1</kbd> to <kbd>6</kbd></dt><dd>Study, Tasks, Topics, Grades, Stats, Settings</dd>
+    <dt><kbd>1</kbd> to <kbd>8</kbd></dt><dd>Study, Tasks, Topics, Plan, Habits, Grades, Stats, Settings</dd>
     <dt><kbd>N</kbd> or <kbd>/</kbd></dt><dd>Add a new task</dd>
     <dt><kbd>P</kbd></dt><dd>Next colour theme</dd>
     <dt><kbd>D</kbd></dt><dd>Switch light and dark</dd>
@@ -384,7 +456,7 @@
   var BOARDS = ['', 'AQA', 'Edexcel', 'OCR', 'WJEC Eduqas', 'WJEC', 'CCEA', 'Other'];
   var DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var LEVELS = ['Not started', 'Shaky', 'Getting there', 'Confident', 'Nailed it'];
-  var VIEWS = ['study', 'tasks', 'topics', 'grades', 'stats', 'settings'];
+  var VIEWS = ['study', 'tasks', 'topics', 'plan', 'orbit', 'grades', 'stats', 'settings'];
   var TILES = 60;   // timer ring: one square tile per minute-mark
   var introUntil = Date.now() + 900; // bars fill in once on first render only
 
@@ -452,13 +524,14 @@
     return {
       subjects: subjects.map(function (n, i) { return { id: uid(), name: n, c: i % 6, board: n === 'Biology' || n === 'Chemistry' || n === 'Physics' ? 'OCR' : '' }; }),
       activities: acts.map(function (n) { return { id: uid(), name: n }; }),
-      tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(),
+      tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(), plan: [], habits: [],
       settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length },
       ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', subjectsV2: '0' },
       timer: null
     };
   }
   function normalise(st) {
+    st.habits = (st.habits || []).filter(function (x) { return x && typeof x.id === 'string' && typeof x.name === 'string' && Array.isArray(x.days) && Array.isArray(x.done); });
     st.subjects.forEach(function (s, i) { if (typeof s.c !== 'number') s.c = i % 6; });
   }
   function load() {
@@ -467,7 +540,7 @@
       var raw = localStorage.getItem(KEY);
       if (raw) {
         var d = JSON.parse(raw);
-        ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules'].forEach(function (k) { if (Array.isArray(d[k])) base[k] = d[k]; });
+        ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules', 'plan', 'habits'].forEach(function (k) { if (Array.isArray(d[k])) base[k] = d[k]; });
         if (d.settings) Object.keys(base.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') base.settings[k] = d.settings[k]; });
         if (d.ui) Object.keys(base.ui).forEach(function (k) { if (typeof d.ui[k] === 'string') base.ui[k] = d.ui[k]; });
         if (d.timer && typeof d.timer === 'object') base.timer = d.timer;
@@ -492,6 +565,7 @@
     try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; }
     catch (e) { storageOk = false; }
     $('storage-warn').hidden = storageOk;
+    if (window.studyLogCloud) window.studyLogCloud.changed();
   }
 
   /* ---------- helpers ---------- */
@@ -672,7 +746,7 @@
     $('clock').textContent = txt;
     var lit = Math.ceil(frac * TILES), tiles = $('tiles').children;
     for (var i = 0; i < tiles.length; i++) tiles[i].setAttribute('class', i < lit ? (i === lit - 1 ? 'on hi' : 'on') : '');
-    document.title = T.running ? txt + ' · Study log' : 'Study log';
+    document.title = T.running ? txt + ' · Orbit' : 'Orbit';
     if (typeof renderNow === 'function' && $('now')) renderNow(txt, frac);
   }
 
@@ -732,8 +806,27 @@
     S.modules.forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) n++; }); });
     return n;
   }
+  // A day counts toward the streak once you have studied STREAK_MIN seconds. Today never breaks it until the day ends.
+  var STREAK_MIN = 1800;
+  function streaks() {
+    var tot = {}, today = dkey(new Date());
+    S.sessions.forEach(function (s) { var k = sessionDay(s); tot[k] = (tot[k] || 0) + s.seconds; });
+    var ok = function (k) { return (tot[k] || 0) >= STREAK_MIN; };
+    var cur = 0, d = new Date();
+    if (!ok(today)) d = addDays(d, -1);
+    while (ok(dkey(d))) { cur++; d = addDays(d, -1); }
+    var best = 0, run = 0, days = Object.keys(tot).filter(ok).sort(), prev = null;
+    days.forEach(function (k) { run = prev && dkey(addDays(parseKey(prev), 1)) === k ? run + 1 : 1; if (run > best) best = run; prev = k; });
+    return { cur: cur, best: best, doneToday: ok(today) };
+  }
+  function renderStreak() {
+    var s = streaks(), n = s.cur;
+    $('streak-big').textContent = n + (n === 1 ? ' day' : ' days');
+    $('streak-note').textContent = (s.doneToday ? 'Today counts. ' : (n ? 'Study ' + Math.round(STREAK_MIN / 60) + ' minutes today to keep it going. ' : 'Study ' + Math.round(STREAK_MIN / 60) + ' minutes to start one. ')) + 'Best: ' + Math.max(s.best, n) + (s.best === 1 ? ' day' : ' days') + '.';
+  }
   function renderToday() {
     if (typeof renderSide === 'function' && $('wmap')) renderSide();
+    renderStreak();
     var today = dkey(new Date());
     var list = S.sessions.filter(function (s) { return sessionDay(s) === today; });
     $('today-big').textContent = fmtDur(sumSeconds(list));
@@ -1184,6 +1277,8 @@
     });
     if (v === 'stats') renderStats();
     if (v === 'topics') renderTopics();
+    if (v === 'plan') renderPlan();
+    if (v === 'orbit') renderOrbit();
     if (v === 'grades') renderGrades();
     if (v === 'settings') renderSettings();
     if (v === 'study') renderToday();
@@ -1191,6 +1286,151 @@
     persist();
     window.scrollTo(0, 0);
   }
+  /* ---------- plan: a weekly revision grid, plus spaced-repetition suggestions ---------- */
+  var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  var REVIEW_GAP = [0, 2, 4, 7, 14]; // days before a topic of that confidence level is worth revising again
+  function weekKey() { return dkey(mondayOf(new Date())); }
+  function todayIdx() { return (new Date().getDay() + 6) % 7; }
+  function planSuggestions() {
+    var out = [];
+    S.modules.forEach(function (m) { m.topics.forEach(function (t) {
+      if (t.level < 1) return;
+      var age = t.revised ? daysSince(t.revised) : 999, over = age - REVIEW_GAP[Math.min(t.level, 4)];
+      var planned = S.plan.some(function (p) { return p.topicId === t.id; });
+      if (over >= 0 && !planned) out.push({ t: t, m: m, over: over });
+    }); });
+    out.sort(function (a, b) { return a.t.level - b.t.level || b.over - a.over; });
+    return out.slice(0, 5);
+  }
+  function addSlot(day, subjectId, text, mins, topicId) {
+    S.plan.push({ id: uid(), day: day, subjectId: subjectId || '', text: text, mins: mins, topicId: topicId || '', doneWeek: '' });
+    persist(); renderPlan();
+  }
+  function renderPlan() {
+    var dsel = $('plan-day');
+    if (!dsel.options.length) { DAYS.forEach(function (n, i) { dsel.appendChild(el('option', { value: String(i), text: n })); }); dsel.value = String(todayIdx()); }
+    var ssel = $('plan-subject'), cur = ssel.value; ssel.textContent = '';
+    ssel.appendChild(el('option', { value: '', text: 'Any subject' }));
+    S.subjects.forEach(function (s) { ssel.appendChild(el('option', { value: s.id, text: subjectLabel(s) })); });
+    ssel.value = cur;
+    var wk = weekKey(), box = $('plan-days'); box.textContent = '';
+    DAYS.forEach(function (name, i) {
+      var slots = S.plan.filter(function (p) { return p.day === i; }), mins = 0;
+      slots.forEach(function (p) { mins += p.mins; });
+      var head = el('div', { class: 'row-between' }, [el('span', { class: 'label', text: name + (i === todayIdx() ? ' · today' : '') }), el('span', { class: 'label num', text: slots.length ? fmtDur(mins * 60) : '' })]);
+      var ul = el('ul', {});
+      if (!slots.length) ul.appendChild(el('li', { class: 'empty', text: 'Nothing planned.' }));
+      slots.forEach(function (p) {
+        var sj = byId(S.subjects, p.subjectId), done = p.doneWeek === wk;
+        var cb = el('input', { type: 'checkbox', id: 'plan-' + p.id }); cb.checked = done;
+        cb.addEventListener('change', function () { p.doneWeek = cb.checked ? wk : ''; persist(); renderPlan(); });
+        var kids = [el('label', {}, [cb, el('span', { class: 't', text: p.text || (sj ? sj.name : 'Revision') })]), el('span', { class: 'tag', text: p.mins + ' min' })];
+        if (sj) {
+          kids.push(el('span', { class: 'tag', text: sj.name, title: subjectLabel(sj) }));
+          var go = el('button', { type: 'button', class: 'btn plain', text: 'Start' });
+          go.addEventListener('click', function () { S.ui.subjectId = sj.id; persist(); setView('study'); renderTimer(); });
+          kids.push(go);
+        }
+        var x = el('button', { type: 'button', class: 'x', title: 'Delete', 'aria-label': 'Delete slot', text: '\u00d7' });
+        x.addEventListener('click', function () { removeWithUndo(function () { return S.plan; }, p, 'Slot removed.', renderPlan); });
+        kids.push(x);
+        ul.appendChild(el('li', { class: 'row task' + (done ? ' done' : '') }, kids));
+      });
+      box.appendChild(el('div', {}, [head, el('div', { class: 'block' }, [ul])]));
+    });
+    var sug = planSuggestions(), sl = $('plan-suggest'); sl.textContent = '';
+    $('plan-suggest-box').hidden = !sug.length;
+    sug.forEach(function (r) {
+      var sj = null; S.subjects.forEach(function (s) { if (s.name === r.m.subject) sj = s; });
+      var add = el('button', { type: 'button', class: 'btn plain', text: 'Add' });
+      add.addEventListener('click', function () { addSlot(Number($('plan-day').value), sj ? sj.id : '', r.t.code + ' ' + r.t.title, 30, r.t.id); });
+      sl.appendChild(el('li', { class: 'row' }, [el('span', { class: 'grow' }, [r.t.code + ' ' + r.t.title, el('span', { class: 'sec', text: r.m.subject + ' \u00b7 ' + LEVELS[r.t.level] + ' \u00b7 ' + revisedText(r.t) })]), add]));
+    });
+  }
+  $('plan-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = $('plan-text').value.trim(), mins = Math.max(5, Math.min(240, Number($('plan-mins').value) || 30));
+    if (!text && !$('plan-subject').value) { $('plan-text').focus(); return; }
+    addSlot(Number($('plan-day').value), $('plan-subject').value, text, mins, '');
+    $('plan-text').value = '';
+  });
+
+  /* ---------- orbit: habits, a week grid per habit, and a five-week constellation ---------- */
+  var DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], newHabitDays = [0, 1, 2, 3, 4, 5, 6];
+  function dayIdx(d) { return (d.getDay() + 6) % 7; }
+  function isSched(hb, d) { return hb.days.indexOf(dayIdx(d)) >= 0; }
+  function toggleHabit(hb, key) {
+    var i = hb.done.indexOf(key);
+    if (i >= 0) hb.done.splice(i, 1); else hb.done.push(key);
+    persist(); renderOrbit();
+  }
+  function renderOrbit() {
+    var dsel = $('habit-days'); dsel.textContent = '';
+    DAY_SHORT.forEach(function (n, i) {
+      var b = el('button', { type: 'button', text: n, 'aria-pressed': String(newHabitDays.indexOf(i) >= 0) });
+      b.addEventListener('click', function () {
+        var at = newHabitDays.indexOf(i);
+        if (at >= 0) { if (newHabitDays.length > 1) newHabitDays.splice(at, 1); } else newHabitDays.push(i);
+        renderOrbit();
+      });
+      dsel.appendChild(b);
+    });
+    var now = new Date(), todayKey = dkey(now), ws = mondayOf(now), habits = S.habits;
+
+    var tl = $('habit-today'); tl.textContent = '';
+    var todays = habits.filter(function (hb) { return isSched(hb, now); });
+    if (!habits.length) tl.appendChild(el('li', { class: 'empty', text: 'No habits yet. Add the first one above.' }));
+    else if (!todays.length) tl.appendChild(el('li', { class: 'empty', text: 'Nothing scheduled today.' }));
+    todays.forEach(function (hb) {
+      var box = el('input', { type: 'checkbox', id: 'habit-' + hb.id }), done = hb.done.indexOf(todayKey) >= 0;
+      box.checked = done;
+      box.addEventListener('change', function () { toggleHabit(hb, todayKey); });
+      tl.appendChild(el('li', { class: 'row task' + (done ? ' done' : '') }, [el('label', {}, [box, el('span', { class: 't', text: hb.name })])]));
+    });
+
+    var cards = $('habit-cards'); cards.textContent = '';
+    habits.forEach(function (hb) {
+      var week = el('div', { class: 'orbit-week' }), sched = 0, did = 0;
+      for (var i = 0; i < 7; i++) {
+        var d = addDays(ws, i), k = dkey(d), on = isSched(hb, d), future = k > todayKey, ticked = hb.done.indexOf(k) >= 0;
+        if (on && !future) { sched++; if (ticked) did++; }
+        var t = el('button', { type: 'button', class: 'wtile ' + (ticked ? 'l4' : 'l0') + (on ? '' : ' off') + (k === todayKey ? ' today' : ''), 'aria-pressed': String(ticked),
+          'aria-label': hb.name + ', ' + DAY_SHORT[i] + (ticked ? ', done' : on ? ', not done' : ', not scheduled'), title: DAY_SHORT[i] });
+        t.disabled = future;
+        (function (key) { t.addEventListener('click', function () { toggleHabit(hb, key); }); })(k);
+        week.appendChild(t);
+      }
+      var s30 = 0, d30 = 0;
+      for (var j = 0; j < 30; j++) { var dd = addDays(now, -j); if (isSched(hb, dd)) { s30++; if (hb.done.indexOf(dkey(dd)) >= 0) d30++; } }
+      var x = el('button', { type: 'button', class: 'x', title: 'Delete', 'aria-label': 'Delete ' + hb.name, text: '\u00d7' });
+      x.addEventListener('click', function () { removeWithUndo(function () { return S.habits; }, hb, 'Habit deleted.', renderOrbit); });
+      cards.appendChild(el('div', { class: 'block pad orbit-card' }, [
+        el('div', { class: 'row-between' }, [el('strong', { text: hb.name }), x]),
+        week,
+        el('span', { class: 'label', text: hb.days.length === 7 ? 'Every day' : hb.days.slice().sort().map(function (n) { return DAY_SHORT[n]; }).join(', ') }),
+        el('span', { class: 'note', text: 'This week: ' + did + ' of ' + sched + ' so far. Last 30 days: ' + (s30 ? Math.round(d30 / s30 * 100) + '%' : 'none scheduled') + '.' })
+      ]));
+    });
+
+    $('habit-sky-box').hidden = !habits.length;
+    var sky = $('habit-sky'); sky.textContent = '';
+    var start = addDays(ws, -28);
+    for (var n = 0; n < 35; n++) {
+      var day = addDays(start, n), key = dkey(day), future2 = key > todayKey, sc = 0, dn = 0;
+      habits.forEach(function (hb) { if (isSched(hb, day)) { sc++; if (hb.done.indexOf(key) >= 0) dn++; } });
+      var lvl = sc ? Math.ceil(4 * dn / sc) : 0;
+      sky.appendChild(el('span', { class: 'wtile l' + lvl + (key === todayKey ? ' today' : '') + (future2 ? ' future' : ''), role: 'img',
+        'aria-label': day.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + (future2 ? '' : ': ' + dn + ' of ' + sc + ' habits'), title: key }));
+    }
+  }
+  $('habit-name').addEventListener('input', function () { $('habit-add').disabled = !$('habit-name').value.trim(); });
+  $('habit-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('habit-name').value.trim(); if (!name) return;
+    S.habits.push({ id: uid(), name: name, days: newHabitDays.slice().sort(), done: [] });
+    $('habit-name').value = ''; $('habit-add').disabled = true; persist(); renderOrbit();
+  });
+
   /* ---------- right bar: session aquarium, week map, bonsai, up next ---------- */
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var side = { fish: {}, colours: {}, tree: null, goalFrac: 0, garden: [], buddy: '', buddyCycle: -1 };
@@ -1210,7 +1450,7 @@
 
   function renderSide() {
     for (var i = 1; i <= 6; i++) side.colours[i] = cssVar('--subj-' + i);
-    side.colours.ink = cssVar('--text-3'); side.colours.line = cssVar('--separator');
+    side.colours.ink = cssVar('--text-3'); side.colours.line = cssVar('--separator'); side.colours.accent = cssVar('--accent');
     renderWeekMap(); syncFish(); renderUpNext(); renderGoal(); renderZooNote(); renderSound(); updateClock();
     if (reduceMotion) drawSide(0);
   }
@@ -1364,10 +1604,12 @@
     });
   }
 
-  /* ---------- focus sound: noise made in the browser, nothing downloaded ---------- */
+  /* ---------- focus sound: rain and fire are real recordings (sounds/, CC0 from OpenGameArt); white and brown noise are made in the browser ---------- */
   var SOUNDS = [['white', 'White'], ['rain', 'Rain'], ['brown', 'Brown'], ['fire', 'Fire']];
-  var SOUND_GAIN = { white: 0.3, rain: 0.5, brown: 0.55, fire: 0.55 };
-  var snd = { kind: 'off', src: null, gain: null, timer: 0 };
+  var SOUND_GAIN = { white: 0.3, rain: 0.6, brown: 0.55, fire: 0.8 };
+  var SAMPLE_FILE = { rain: 'sounds/rain.mp3', fire: 'sounds/fire.ogg' };
+  var samples = {}, sndToken = 0;
+  var snd = { kind: 'off', srcs: [], gain: null };
   function soundVol() { return Math.min(1, Math.max(0, Number(S.ui.volume) / 100 || 0)); }
   function noiseBuf(brown) {
     var n = audioCtx.sampleRate * 4, buf = audioCtx.createBuffer(1, n, audioCtx.sampleRate), d = buf.getChannelData(0), last = 0;
@@ -1377,19 +1619,40 @@
     }
     return buf;
   }
-  function stopSound() {
-    clearInterval(snd.timer);
-    try { if (snd.src) snd.src.stop(); } catch (e) {}
-    try { if (snd.gain) snd.gain.disconnect(); } catch (e) {}
-    snd.src = snd.gain = null; snd.kind = 'off';
+  function loadSample(kind) {   // resolves to an AudioBuffer, or null when the file cannot be loaded (e.g. opened from a file)
+    if (!samples[kind]) samples[kind] = fetch(SAMPLE_FILE[kind]).then(function (r) { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+      .then(function (a) { return new Promise(function (ok, no) { audioCtx.decodeAudioData(a, ok, no); }); })
+      .catch(function () { delete samples[kind]; return null; });
+    return samples[kind];
   }
-  function crackle() {                                                      // a short pop for the fire sound
-    if (!audioCtx || !snd.gain) return;
-    var len = Math.floor(audioCtx.sampleRate * 0.03), b = audioCtx.createBuffer(1, len, audioCtx.sampleRate), d = b.getChannelData(0);
-    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-    var s = audioCtx.createBufferSource(), f = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
-    f.type = 'highpass'; f.frequency.value = 1500 + Math.random() * 2500; g.gain.value = 0.25 + Math.random() * 0.6;
-    s.buffer = b; s.connect(f); f.connect(g); g.connect(snd.gain); s.start();
+  function stopSound() {
+    sndToken++;
+    snd.srcs.forEach(function (s) { try { s.stop(); } catch (e) {} });
+    try { if (snd.gain) snd.gain.disconnect(); } catch (e) {}
+    snd.srcs = []; snd.gain = null; snd.kind = 'off';
+  }
+  function startSample(kind, buf) {   // fire plays the short loop twice at different speeds, so the pattern does not repeat obviously
+    var gain = audioCtx.createGain(); gain.gain.value = soundVol() * SOUND_GAIN[kind]; gain.connect(audioCtx.destination);
+    (kind === 'fire' ? [1, 0.83] : [1]).forEach(function (rate, i) {
+      var src = audioCtx.createBufferSource(), g = audioCtx.createGain();
+      src.buffer = buf; src.loop = true; src.playbackRate.value = rate; g.gain.value = i ? 0.7 : 1;
+      src.connect(g); g.connect(gain); src.start(0, Math.random() * buf.duration); snd.srcs.push(src);
+    });
+    snd.gain = gain;
+  }
+  function startNoise(kind) {   // the built-in fallback for rain and fire, and the real thing for white and brown
+    var src = audioCtx.createBufferSource(), gain = audioCtx.createGain(), node = src, f;
+    src.buffer = noiseBuf(kind === 'brown' || kind === 'fire'); src.loop = true;
+    if (kind === 'rain') {
+      var hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 700;
+      f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 4500;
+      src.connect(hp); hp.connect(f); node = f;
+    } else if (kind === 'fire') {
+      f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900; src.connect(f); node = f;
+    }
+    node.connect(gain); gain.connect(audioCtx.destination);
+    gain.gain.value = soundVol() * (kind === 'rain' ? 0.5 : kind === 'fire' ? 0.55 : SOUND_GAIN[kind]);
+    src.start(); snd.srcs.push(src); snd.gain = gain;
   }
   function setSound(kind) {
     stopSound();
@@ -1397,19 +1660,14 @@
       unlockAudio();
       if (!audioCtx) toast('This browser cannot play sound.');
       else try {
-        var src = audioCtx.createBufferSource(), gain = audioCtx.createGain(), node = src, f;
-        src.buffer = noiseBuf(kind === 'brown' || kind === 'fire'); src.loop = true;
-        if (kind === 'rain') {                                             // hiss with the lows and highs trimmed
-          var hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 700;
-          f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 4500;
-          src.connect(hp); hp.connect(f); node = f;
-        } else if (kind === 'fire') {                                      // low rumble plus crackles
-          f = audioCtx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900; src.connect(f); node = f;
-        }
-        node.connect(gain); gain.connect(audioCtx.destination);
-        gain.gain.value = soundVol() * SOUND_GAIN[kind];
-        src.start(); snd.src = src; snd.gain = gain; snd.kind = kind;
-        if (kind === 'fire') snd.timer = setInterval(function () { if (Math.random() < 0.7) crackle(); }, 140);
+        snd.kind = kind;
+        if (SAMPLE_FILE[kind]) {
+          var mine = sndToken;
+          loadSample(kind).then(function (buf) {
+            if (mine !== sndToken) return;               // the person switched sound while it loaded
+            try { if (buf) startSample(kind, buf); else startNoise(kind); } catch (e) { stopSound(); renderSound(); toast('This browser could not start the sound.'); }
+          });
+        } else startNoise(kind);
       } catch (e) { stopSound(); toast('This browser could not start the sound.'); }
     }
     renderSound();
@@ -1640,7 +1898,31 @@
     }
   }
 
-  function drawSide(t, move) { drawTank(t, move); drawTree(t, move); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
+  // Orbit the moon blob: same clock-driven sky as the bonsai. Asleep at night, blinks and hops by day, a dot circles it.
+  var BLOB = ['..XXX...', '.XXXX...', 'XXXXX...', 'XXXXXXXX', 'XXXXXXXX', 'XXXXXXXX', '.XXXXXX.', '..XXXX..'];
+  function drawBlob(t) {
+    var g = fitCanvas($('blob')), c = g.c, T = 4, hr = hourNow(), night = hr < 6.5 || hr >= 20, S2 = 8, ground = Math.round((g.h - 30) / T) * T;
+    drawSky(c, g.w, g.h, T, t);
+    c.fillStyle = '#2B1D16'; c.fillRect(0, ground, g.w, g.h); c.fillStyle = side.colours.line; c.fillRect(0, ground, g.w, 1);
+    var cx = Math.round(g.w / 2 / S2) * S2, cyc = (t % 4200) / 4200;
+    var hop = !night && cyc > 0.7 ? Math.abs(Math.sin((cyc - 0.7) / 0.3 * Math.PI)) * 22 : 0;         // a hop every few seconds by day
+    var breathe = Math.round(Math.sin(t / (night ? 1100 : 700)) * 0.6);                              // slow bob; slower asleep
+    var bx = cx - 4 * S2, by = ground - 8 * S2 - Math.round(hop / S2) * S2 + breathe * 2;
+    c.fillStyle = 'rgba(0,0,0,0.25)'; c.fillRect(cx - 3 * S2 + hop / 4, ground - 3, 6 * S2 - hop / 2, 3);     // shadow
+    c.fillStyle = side.colours.accent || '#6E9BFF';
+    BLOB.forEach(function (row, y) { for (var x = 0; x < 8; x++) if (row[x] === 'X') c.fillRect(bx + x * S2, by + y * S2, S2, S2); });
+    var blink = (t % 3600) < 160, eyeY = by + 4 * S2;
+    c.fillStyle = '#0B1020';
+    if (night || blink) { c.fillRect(bx + 2 * S2, eyeY + S2 / 2, S2, S2 / 2); c.fillRect(bx + 5 * S2, eyeY + S2 / 2, S2, S2 / 2); }   // closed eyes
+    else { c.fillRect(bx + 2 * S2, eyeY, S2, S2); c.fillRect(bx + 5 * S2, eyeY, S2, S2); }
+    var a = t / 1700, ox = Math.round((cx + Math.cos(a) * 5.5 * S2) / T) * T, oy = Math.round((by + 3 * S2 + Math.sin(a) * 2.2 * S2) / T) * T;   // the orbiting dot
+    c.fillStyle = side.colours.accent || '#6E9BFF'; c.globalAlpha = Math.sin(a) < 0 ? 0.45 : 1; c.fillRect(ox, oy, T + 2, T + 2); c.globalAlpha = 1;
+    if (night) for (var z = 0; z < 3; z++) {                                                          // floating z's
+      var u = ((t / 2600) + z / 3) % 1; c.globalAlpha = 1 - u; c.fillStyle = '#FFF4DC';
+      c.fillRect(Math.round(cx + 4 * S2 + u * 14 + z * 3), Math.round(by - 2 - u * 30), 3 + z, 3 + z); c.globalAlpha = 1;
+    }
+  }
+  function drawSide(t, move) { drawTank(t, move); drawTree(t, move); drawBlob(t); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
   function sideFrame(t) {
     requestAnimationFrame(sideFrame);
     if (document.hidden || !$('side').offsetParent) return;
@@ -1713,7 +1995,7 @@
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
     if (document.querySelector('dialog[open]')) return;                    // dialogs close themselves with Esc
     if (k === ' ') { if (tag === 'BUTTON' || tag === 'A') return; e.preventDefault(); if (T.running) pause(); else start(); return; }
-    var views = ['study', 'tasks', 'topics', 'grades', 'stats', 'settings'], n = Number(k);
+    var views = ['study', 'tasks', 'topics', 'plan', 'orbit', 'grades', 'stats', 'settings'], n = Number(k);
     if (n >= 1 && n <= 6 && k.length === 1) { setView(views[n - 1]); return; }
     if (k === 'n' || k === 'N' || k === '/') { e.preventDefault(); setView('tasks'); $('task-text').focus(); return; }
     if (k === 'p' || k === 'P') { var i = PALETTES.map(function (x) { return x[0]; }).indexOf(S.ui.palette); setPalette(PALETTES[(i + 1) % PALETTES.length][0]); return; }
@@ -1804,7 +2086,7 @@
 
   /* backup */
   $('export').addEventListener('click', function () {
-    var data = { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, settings: S.settings };
+    var data = { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, plan: S.plan, habits: S.habits, settings: S.settings };
     try {
       var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
@@ -1824,17 +2106,29 @@
           (!d.modules || (Array.isArray(d.modules) && d.modules.every(function (m) { return m && Array.isArray(m.topics); })));
         if (!ok) throw new Error('shape');
         S.subjects = d.subjects; S.activities = d.activities; S.tasks = d.tasks; S.chores = Array.isArray(d.chores) ? d.chores : []; S.grades = Array.isArray(d.grades) ? d.grades : [];
-        S.targets = d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets) ? d.targets : {}; S.sessions = d.sessions;
+        S.targets = d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets) ? d.targets : {}; S.sessions = d.sessions; S.plan = Array.isArray(d.plan) ? d.plan : []; S.habits = Array.isArray(d.habits) ? d.habits : [];
         if (d.modules) S.modules = d.modules;
         if (d.settings) Object.keys(S.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') S.settings[k] = d.settings[k]; });
         normalise(S);
         persist(); fillSelects(); renderAll(); renderSettings();
         toast('Backup restored: ' + d.sessions.length + ' sessions and ' + d.tasks.length + ' tasks.');
-      } catch (err) { toast('That file is not a Study log backup.'); }
+      } catch (err) { toast('That file is not an Orbit backup.'); }
       e.target.value = '';
     };
     r.readAsText(f);
   });
+
+  /* cloud sync (cloud.js) uses these two: what to save, and how to load what it fetched */
+  window.studyLogData = function () {
+    return { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, plan: S.plan, habits: S.habits, settings: S.settings };
+  };
+  window.studyLogApply = function (d) {
+    ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules', 'plan', 'habits'].forEach(function (k) { if (Array.isArray(d[k])) S[k] = d[k]; });
+    if (d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets)) S.targets = d.targets;
+    if (d.settings) Object.keys(S.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') S.settings[k] = d.settings[k]; });
+    normalise(S);
+    persist(); fillSelects(); renderAll(); renderSettings();
+  };
 
   document.addEventListener('visibilitychange', tick);
   window.addEventListener('beforeunload', function () { persist(); });
@@ -1855,5 +2149,7 @@
   setTimeout(function () { $('ring').classList.remove('intro'); }, 900);
 })();
 </script>
+<script src="firebase-config.js"></script>
+<script src="cloud.js"></script>
 </body>
 </html>
