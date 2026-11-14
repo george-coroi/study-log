@@ -107,6 +107,7 @@ select:focus, input:focus { outline: 2px solid var(--accent); outline-offset: 0;
 .seg button { color: var(--text-2); height: 32px; padding: 0 var(--s-4); border: 0; border-radius: calc(var(--r-sm) - 2px); background: transparent; font-size: var(--fs-15); white-space: nowrap; }
 .seg button[aria-pressed="true"] { color: var(--text); background: var(--seg-thumb); box-shadow: var(--shadow-seg); font-weight: 600; }
 .seg button:disabled:not([aria-pressed="true"]) { opacity: 0.35; }
+#topic-subjects { flex-wrap: wrap; }   /* eight subjects: wrap onto a second row rather than run off the page */
 .x { flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--text-3); font-size: var(--fs-17); line-height: 1; }
 .x:hover { background: var(--fill); color: var(--text); }
 

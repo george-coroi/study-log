@@ -19,7 +19,7 @@ Orbit is a study tracker for GCSE students. It is plain HTML, CSS and JavaScript
 | --- | --- |
 | **Study** | Pomodoro, timer and stopwatch. Every session has a subject and an activity. |
 | **Tasks** | Separate school and personal to-do lists. |
-| **Topics** | OCR Gateway Science A tracker: confidence and last revised, with revision reminders. |
+| **Topics** | Topic lists with a confidence rating and last-revised date for each, plus revision reminders. OCR Gateway Science A (Biology, Chemistry, Physics), and study lists for Maths, Further Maths, Computer Science, French and Italian. You can edit any list. |
 | **Plan** | A weekly revision plan with spaced-repetition suggestions. |
 | **Habits** | Daily habits and a five-week heat map. |
 | **Grades** | A tab for each subject, with target grades. |

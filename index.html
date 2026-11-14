@@ -141,7 +141,7 @@
 
       <!-- ================= TOPICS ================= -->
       <section id="view-topics" data-page="topics" hidden>
-        <header class="page-head"><h1>Topics</h1><p class="sub">OCR Gateway Science A. Rate how well you know each topic. Rating one also marks it revised today.</p></header>
+        <header class="page-head"><h1>Topics</h1><p class="sub">Science follows OCR Gateway A; the other lists are study guides, so check them against your own specification. Rate how well you know each topic. Rating one also marks it revised today.</p></header>
         <div class="stack">
           <div>
             <div class="row-between">
@@ -149,6 +149,11 @@
                 <button type="button" data-ts="Biology">Biology</button>
                 <button type="button" data-ts="Chemistry">Chemistry</button>
                 <button type="button" data-ts="Physics">Physics</button>
+                <button type="button" data-ts="Maths">Maths</button>
+                <button type="button" data-ts="Further Maths">Further Maths</button>
+                <button type="button" data-ts="Computer Science">Comp Sci</button>
+                <button type="button" data-ts="French">French</button>
+                <button type="button" data-ts="Italian">Italian</button>
               </div>
               <span class="label num" id="topic-overall"></span>
             </div>
@@ -314,7 +319,7 @@
             <div class="block pad">
               <div class="nums"><div class="field"><label class="label" for="p-stale">Due for revision after (days)</label><input type="number" id="p-stale" min="1" max="90"></div></div>
               <p class="note" style="margin-top:var(--s-3)">A topic you have started shows as due once it has gone this long without being revised.</p>
-              <div style="margin-top:var(--s-4)"><button type="button" class="btn" id="topics-reset">Reset topics to the OCR list</button></div>
+              <div style="margin-top:var(--s-4)"><button type="button" class="btn" id="topics-reset">Reset topics to the default lists</button></div>
             </div>
           </div>
           <div>
@@ -491,10 +496,48 @@
       ['P8', 'Global challenges', [['P8.1', 'Physics on the move'], ['P8.2', 'Powering Earth'], ['P8.3', 'Beyond Earth']]]
     ]
   };
-  function seedModules() {
+  /* Other subjects. Maths follows the strands of the DfE GCSE (9-1) subject content, which every board uses. Further Maths follows the usual Level 2 Certificate
+     content areas. Computer Science follows OCR J277 (two papers). French and Italian use the three DfE themes shared by AQA, Edexcel and Eduqas, plus grammar and the four skills.
+     These are study lists, not copies of a specification: check them against your own exam board's specification and use Edit list to change them. */
+  function lang(p, grammar) {
+    return [
+      [p + '1', 'Theme 1: Identity and culture', [[p + '1.1', 'Me, my family and friends'], [p + '1.2', 'Technology in everyday life'], [p + '1.3', 'Free-time activities'], [p + '1.4', 'Customs and festivals']]],
+      [p + '2', 'Theme 2: Local, national, international and global areas of interest', [[p + '2.1', 'Home, town, neighbourhood and region'], [p + '2.2', 'Social issues'], [p + '2.3', 'Global issues'], [p + '2.4', 'Travel and tourism']]],
+      [p + '3', 'Theme 3: Current and future study and employment', [[p + '3.1', 'My studies'], [p + '3.2', 'Life at school and college'], [p + '3.3', 'Education post-16'], [p + '3.4', 'Jobs, career choices and ambitions']]],
+      [p + '4', 'Grammar', grammar.map(function (g, i) { return [p + '4.' + (i + 1), g]; })],
+      [p + '5', 'Skills and exam papers', [[p + '5.1', 'Listening'], [p + '5.2', 'Speaking: role play, photo card and conversation'], [p + '5.3', 'Reading and translation into English'], [p + '5.4', 'Writing and translation into the language']]]
+    ];
+  }
+  var OTHER = {
+    'Maths': [
+      ['MA1', 'Number', [['MA1.1', 'Fractions, decimals and percentages'], ['MA1.2', 'Factors, multiples and primes (HCF and LCM)'], ['MA1.3', 'Powers, roots and indices'], ['MA1.4', 'Standard form'], ['MA1.5', 'Surds'], ['MA1.6', 'Rounding, estimation and bounds']]],
+      ['MA2', 'Algebra', [['MA2.1', 'Expressions: simplifying and expanding'], ['MA2.2', 'Factorising, including quadratics'], ['MA2.3', 'Solving linear equations'], ['MA2.4', 'Rearranging formulae'], ['MA2.5', 'Sequences'], ['MA2.6', 'Straight-line graphs'], ['MA2.7', 'Quadratic equations and graphs'], ['MA2.8', 'Simultaneous equations'], ['MA2.9', 'Inequalities'], ['MA2.10', 'Algebraic proof'], ['MA2.11', 'Other graphs and transformations of graphs']]],
+      ['MA3', 'Ratio, proportion and rates of change', [['MA3.1', 'Ratio'], ['MA3.2', 'Direct and inverse proportion'], ['MA3.3', 'Percentage change and compound interest'], ['MA3.4', 'Speed, density and other compound measures'], ['MA3.5', 'Growth and decay'], ['MA3.6', 'Gradients and rates of change on graphs']]],
+      ['MA4', 'Geometry and measures', [['MA4.1', 'Angles and polygons'], ['MA4.2', 'Area, perimeter and circles'], ['MA4.3', 'Volume and surface area'], ['MA4.4', 'Pythagoras’ theorem'], ['MA4.5', 'Trigonometry: right-angled, sine and cosine rules'], ['MA4.6', 'Similarity and congruence'], ['MA4.7', 'Transformations'], ['MA4.8', 'Constructions, loci and bearings'], ['MA4.9', 'Circle theorems'], ['MA4.10', 'Vectors']]],
+      ['MA5', 'Probability', [['MA5.1', 'Basic probability and sample spaces'], ['MA5.2', 'Venn diagrams and set notation'], ['MA5.3', 'Tree diagrams and conditional probability']]],
+      ['MA6', 'Statistics', [['MA6.1', 'Averages and range'], ['MA6.2', 'Charts: histograms, cumulative frequency and box plots'], ['MA6.3', 'Scatter graphs and correlation'], ['MA6.4', 'Sampling']]]
+    ],
+    'Further Maths': [
+      ['FM1', 'Number and algebra', [['FM1.1', 'Surds and rationalising the denominator'], ['FM1.2', 'Algebraic fractions'], ['FM1.3', 'Polynomials: factor and remainder theorems'], ['FM1.4', 'Quadratics: completing the square and the discriminant'], ['FM1.5', 'Inequalities'], ['FM1.6', 'Functions: composite and inverse'], ['FM1.7', 'Sequences and series'], ['FM1.8', 'Simultaneous equations, linear and quadratic']]],
+      ['FM2', 'Coordinate geometry', [['FM2.1', 'Straight lines: parallel and perpendicular'], ['FM2.2', 'Circles: equations and tangents'], ['FM2.3', 'Graphs and transformations of graphs']]],
+      ['FM3', 'Calculus', [['FM3.1', 'Differentiation'], ['FM3.2', 'Tangents and normals'], ['FM3.3', 'Stationary points and optimisation'], ['FM3.4', 'Integration'], ['FM3.5', 'Area under a curve']]],
+      ['FM4', 'Matrices', [['FM4.1', 'Matrix arithmetic'], ['FM4.2', 'Determinants and inverses'], ['FM4.3', 'Matrix transformations']]],
+      ['FM5', 'Geometry and trigonometry', [['FM5.1', 'Circle theorems'], ['FM5.2', 'Sine and cosine rules, area of a triangle'], ['FM5.3', 'Trigonometric graphs and equations'], ['FM5.4', 'Trigonometry in 3D'], ['FM5.5', 'Vectors and proof']]]
+    ],
+    'Computer Science': [
+      ['CS1', 'Paper 1: Computer systems', [['CS1.1', 'Systems architecture: CPU, fetch-execute, cache, embedded systems'], ['CS1.2', 'Memory and storage'], ['CS1.3', 'Data representation: binary, hex, text, images, sound, compression'], ['CS1.4', 'Networks, connections and protocols'], ['CS1.5', 'Network security'], ['CS1.6', 'Systems software'], ['CS1.7', 'Ethical, legal, cultural and environmental impacts']]],
+      ['CS2', 'Paper 2: Computational thinking, algorithms and programming', [['CS2.1', 'Algorithms: computational thinking, searching and sorting'], ['CS2.2', 'Flowcharts, pseudocode and trace tables'], ['CS2.3', 'Programming fundamentals: variables, selection, iteration, arrays, subprograms, files'], ['CS2.4', 'Producing robust programs: validation, testing, defensive design'], ['CS2.5', 'Boolean logic: AND, OR, NOT and truth tables'], ['CS2.6', 'Programming languages and IDEs']]]
+    ],
+    'French': lang('FR', ['Present tense, regular and irregular verbs', 'Past tenses: perfect and imperfect', 'Future and conditional', 'Nouns, articles and adjective agreement', 'Pronouns and reflexive verbs', 'Negatives, questions and comparatives']),
+    'Italian': lang('IT', ['Present tense, regular and irregular verbs', 'Past tenses: passato prossimo and imperfetto', 'Future and conditional', 'Nouns, articles and adjective agreement', 'Pronouns and reflexive verbs', 'Prepositions, negatives and comparatives'])
+  };
+  var LISTS = {};
+  [OCR, OTHER].forEach(function (g) { Object.keys(g).forEach(function (k) { LISTS[k] = g[k]; }); });
+  function seedModules(only) {
     var out = [];
-    Object.keys(OCR).forEach(function (subject) {
-      OCR[subject].forEach(function (m) {
+    Object.keys(LISTS).forEach(function (subject) {
+      if (only && only.indexOf(subject) < 0) return;
+      LISTS[subject].forEach(function (m) {
         out.push({
           id: m[0], subject: subject, code: m[0], title: m[1],
           topics: m[2].map(function (t) { return { id: t[0], code: t[0], title: t[1], level: 0, revised: null }; })
@@ -502,6 +545,11 @@
       });
     });
     return out;
+  }
+  function addMissingLists(st) {   // saves from before a subject's list existed get it added; ratings already saved are left alone
+    if (!Array.isArray(st.modules)) st.modules = [];
+    var miss = Object.keys(LISTS).filter(function (s) { return !st.modules.some(function (m) { return m.subject === s; }); });
+    if (miss.length) st.modules = st.modules.concat(seedModules(miss));
   }
 
   function $(id) { return document.getElementById(id); }
@@ -532,6 +580,7 @@
     };
   }
   function normalise(st) {
+    addMissingLists(st);
     st.habits = (st.habits || []).filter(function (x) { return x && typeof x.id === 'string' && typeof x.name === 'string' && Array.isArray(x.days) && Array.isArray(x.done); });
     st.subjects.forEach(function (s, i) { if (typeof s.c !== 'number') s.c = i % 6; });
   }
@@ -2162,8 +2211,8 @@
   });
   $('topic-edit').addEventListener('click', function () { editMode = !editMode; renderTopics(); });
   $('topics-reset').addEventListener('click', function () {
-    confirmSheet('Reset all topics?', 'This clears every rating and revision date and restores the OCR list.', 'Reset topics', function () {
-      S.modules = seedModules(); persist(); renderTopics(); renderToday(); toast('Topics reset to the OCR list.');
+    confirmSheet('Reset all topics?', 'This clears every rating and revision date and restores the default lists.', 'Reset topics', function () {
+      S.modules = seedModules(); persist(); renderTopics(); renderToday(); toast('Topics reset to the default lists.');
     });
   });
 
