@@ -2,6 +2,8 @@
 
 A free study tracker for GCSE students. No install, no build step: plain HTML, CSS and JavaScript.
 
+Built with Claude (Anthropic).
+
 - Pomodoro, timer and stopwatch, with a subject and activity for every session
 - Daily and weekly totals
 - School and personal to-do lists
