@@ -20,6 +20,7 @@
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
   <symbol id="i-sidebar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M9.5 4.5v15"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v6a4 4 0 0 1-8 0zM8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3M12 14v4M8.5 20h7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
   <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></symbol>
 </svg>
 
@@ -35,6 +36,7 @@
       <button type="button" class="nav-item" data-view="study" title="Study"><svg class="ic"><use href="#i-clock"/></svg><span class="lbl">Study</span></button>
       <button type="button" class="nav-item" data-view="tasks" title="Tasks"><svg class="ic"><use href="#i-check"/></svg><span class="lbl">Tasks</span></button>
       <button type="button" class="nav-item" data-view="topics" title="Topics"><svg class="ic"><use href="#i-book"/></svg><span class="lbl">Topics</span></button>
+      <button type="button" class="nav-item" data-view="plan" title="Plan"><svg class="ic"><use href="#i-cal"/></svg><span class="lbl">Plan</span></button>
       <button type="button" class="nav-item" data-view="grades" title="Grades"><svg class="ic"><use href="#i-trophy"/></svg><span class="lbl">Grades</span></button>
       <button type="button" class="nav-item" data-view="stats" title="Stats"><svg class="ic"><use href="#i-chart"/></svg><span class="lbl">Stats</span></button>
     </nav>
@@ -86,6 +88,11 @@
             <div class="block pad">
               <div class="label">Studied today</div>
               <div class="stat" id="today-big">0m</div>
+            </div>
+            <div class="block pad">
+              <div class="label">Study streak</div>
+              <div class="stat" id="streak-big">0 days</div>
+              <p class="note" id="streak-note"></p>
             </div>
             <div>
               <h2>Sessions today</h2>
@@ -147,6 +154,26 @@
             <button type="button" class="btn" id="topic-edit" aria-pressed="false">Edit list</button>
           </div>
           <div id="topic-list"></div>
+        </div>
+      </section>
+
+      <!-- ================= PLAN ================= -->
+      <section id="view-plan" data-page="plan" hidden>
+        <header class="page-head"><h1>Plan</h1><p class="sub">Your revision week. Slots repeat every week and the ticks reset on Monday.</p></header>
+        <div class="stack">
+          <form class="task-form" id="plan-form">
+            <div class="field"><label class="label" for="plan-day">Day</label><select id="plan-day"></select></div>
+            <div class="field"><label class="label" for="plan-subject">Subject</label><select id="plan-subject"></select></div>
+            <div class="field"><label class="label" for="plan-text">What</label><input type="text" id="plan-text" maxlength="120" autocomplete="off" placeholder="Topic or task"></div>
+            <div class="field"><label class="label" for="plan-mins">Minutes</label><input type="number" id="plan-mins" min="5" max="240" step="5" value="30"></div>
+            <button type="submit" class="btn primary" id="plan-add">Add slot</button>
+          </form>
+          <div class="block pad" id="plan-suggest-box" hidden>
+            <div class="label">Suggested to revise</div>
+            <p class="note">Based on how well you know a topic and when you last revised it. Added to the day chosen above.</p>
+            <ul id="plan-suggest"></ul>
+          </div>
+          <div id="plan-days" class="stack"></div>
         </div>
       </section>
 
@@ -276,7 +303,7 @@
           <div>
             <h2>Keyboard</h2>
             <div class="block pad">
-              <p class="note">Space starts the timer, 1 to 6 switch pages, N adds a task, P changes the colour theme. Press ? any time to see them all.</p>
+              <p class="note">Space starts the timer, 1 to 7 switch pages, N adds a task, P changes the colour theme. Press ? any time to see them all.</p>
               <div style="margin-top:var(--s-3)"><button type="button" class="btn" id="keys-open">Show shortcuts</button></div>
             </div>
           </div>
@@ -368,7 +395,7 @@
   <div class="sheet-head"><h2 id="keys-title">Keyboard shortcuts</h2><button type="button" class="x" id="keys-close" aria-label="Close">&times;</button></div>
   <dl class="keys">
     <dt><kbd>Space</kbd></dt><dd>Start or pause the timer</dd>
-    <dt><kbd>1</kbd> to <kbd>6</kbd></dt><dd>Study, Tasks, Topics, Grades, Stats, Settings</dd>
+    <dt><kbd>1</kbd> to <kbd>7</kbd></dt><dd>Study, Tasks, Topics, Plan, Grades, Stats, Settings</dd>
     <dt><kbd>N</kbd> or <kbd>/</kbd></dt><dd>Add a new task</dd>
     <dt><kbd>P</kbd></dt><dd>Next colour theme</dd>
     <dt><kbd>D</kbd></dt><dd>Switch light and dark</dd>
@@ -394,7 +421,7 @@
   var BOARDS = ['', 'AQA', 'Edexcel', 'OCR', 'WJEC Eduqas', 'WJEC', 'CCEA', 'Other'];
   var DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var LEVELS = ['Not started', 'Shaky', 'Getting there', 'Confident', 'Nailed it'];
-  var VIEWS = ['study', 'tasks', 'topics', 'grades', 'stats', 'settings'];
+  var VIEWS = ['study', 'tasks', 'topics', 'plan', 'grades', 'stats', 'settings'];
   var TILES = 60;   // timer ring: one square tile per minute-mark
   var introUntil = Date.now() + 900; // bars fill in once on first render only
 
@@ -462,7 +489,7 @@
     return {
       subjects: subjects.map(function (n, i) { return { id: uid(), name: n, c: i % 6, board: n === 'Biology' || n === 'Chemistry' || n === 'Physics' ? 'OCR' : '' }; }),
       activities: acts.map(function (n) { return { id: uid(), name: n }; }),
-      tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(),
+      tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(), plan: [],
       settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length },
       ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', subjectsV2: '0' },
       timer: null
@@ -477,7 +504,7 @@
       var raw = localStorage.getItem(KEY);
       if (raw) {
         var d = JSON.parse(raw);
-        ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules'].forEach(function (k) { if (Array.isArray(d[k])) base[k] = d[k]; });
+        ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules', 'plan'].forEach(function (k) { if (Array.isArray(d[k])) base[k] = d[k]; });
         if (d.settings) Object.keys(base.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') base.settings[k] = d.settings[k]; });
         if (d.ui) Object.keys(base.ui).forEach(function (k) { if (typeof d.ui[k] === 'string') base.ui[k] = d.ui[k]; });
         if (d.timer && typeof d.timer === 'object') base.timer = d.timer;
@@ -743,8 +770,27 @@
     S.modules.forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) n++; }); });
     return n;
   }
+  // A day counts toward the streak once you have studied STREAK_MIN seconds. Today never breaks it until the day ends.
+  var STREAK_MIN = 1800;
+  function streaks() {
+    var tot = {}, today = dkey(new Date());
+    S.sessions.forEach(function (s) { var k = sessionDay(s); tot[k] = (tot[k] || 0) + s.seconds; });
+    var ok = function (k) { return (tot[k] || 0) >= STREAK_MIN; };
+    var cur = 0, d = new Date();
+    if (!ok(today)) d = addDays(d, -1);
+    while (ok(dkey(d))) { cur++; d = addDays(d, -1); }
+    var best = 0, run = 0, days = Object.keys(tot).filter(ok).sort(), prev = null;
+    days.forEach(function (k) { run = prev && dkey(addDays(parseKey(prev), 1)) === k ? run + 1 : 1; if (run > best) best = run; prev = k; });
+    return { cur: cur, best: best, doneToday: ok(today) };
+  }
+  function renderStreak() {
+    var s = streaks(), n = s.cur;
+    $('streak-big').textContent = n + (n === 1 ? ' day' : ' days');
+    $('streak-note').textContent = (s.doneToday ? 'Today counts. ' : (n ? 'Study ' + Math.round(STREAK_MIN / 60) + ' minutes today to keep it going. ' : 'Study ' + Math.round(STREAK_MIN / 60) + ' minutes to start one. ')) + 'Best: ' + Math.max(s.best, n) + (s.best === 1 ? ' day' : ' days') + '.';
+  }
   function renderToday() {
     if (typeof renderSide === 'function' && $('wmap')) renderSide();
+    renderStreak();
     var today = dkey(new Date());
     var list = S.sessions.filter(function (s) { return sessionDay(s) === today; });
     $('today-big').textContent = fmtDur(sumSeconds(list));
@@ -1195,6 +1241,7 @@
     });
     if (v === 'stats') renderStats();
     if (v === 'topics') renderTopics();
+    if (v === 'plan') renderPlan();
     if (v === 'grades') renderGrades();
     if (v === 'settings') renderSettings();
     if (v === 'study') renderToday();
@@ -1202,6 +1249,75 @@
     persist();
     window.scrollTo(0, 0);
   }
+  /* ---------- plan: a weekly revision grid, plus spaced-repetition suggestions ---------- */
+  var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  var REVIEW_GAP = [0, 2, 4, 7, 14]; // days before a topic of that confidence level is worth revising again
+  function weekKey() { return dkey(mondayOf(new Date())); }
+  function todayIdx() { return (new Date().getDay() + 6) % 7; }
+  function planSuggestions() {
+    var out = [];
+    S.modules.forEach(function (m) { m.topics.forEach(function (t) {
+      if (t.level < 1) return;
+      var age = t.revised ? daysSince(t.revised) : 999, over = age - REVIEW_GAP[Math.min(t.level, 4)];
+      var planned = S.plan.some(function (p) { return p.topicId === t.id; });
+      if (over >= 0 && !planned) out.push({ t: t, m: m, over: over });
+    }); });
+    out.sort(function (a, b) { return a.t.level - b.t.level || b.over - a.over; });
+    return out.slice(0, 5);
+  }
+  function addSlot(day, subjectId, text, mins, topicId) {
+    S.plan.push({ id: uid(), day: day, subjectId: subjectId || '', text: text, mins: mins, topicId: topicId || '', doneWeek: '' });
+    persist(); renderPlan();
+  }
+  function renderPlan() {
+    var dsel = $('plan-day');
+    if (!dsel.options.length) { DAYS.forEach(function (n, i) { dsel.appendChild(el('option', { value: String(i), text: n })); }); dsel.value = String(todayIdx()); }
+    var ssel = $('plan-subject'), cur = ssel.value; ssel.textContent = '';
+    ssel.appendChild(el('option', { value: '', text: 'Any subject' }));
+    S.subjects.forEach(function (s) { ssel.appendChild(el('option', { value: s.id, text: subjectLabel(s) })); });
+    ssel.value = cur;
+    var wk = weekKey(), box = $('plan-days'); box.textContent = '';
+    DAYS.forEach(function (name, i) {
+      var slots = S.plan.filter(function (p) { return p.day === i; }), mins = 0;
+      slots.forEach(function (p) { mins += p.mins; });
+      var head = el('div', { class: 'row-between' }, [el('span', { class: 'label', text: name + (i === todayIdx() ? ' · today' : '') }), el('span', { class: 'label num', text: slots.length ? fmtDur(mins * 60) : '' })]);
+      var ul = el('ul', {});
+      if (!slots.length) ul.appendChild(el('li', { class: 'empty', text: 'Nothing planned.' }));
+      slots.forEach(function (p) {
+        var sj = byId(S.subjects, p.subjectId), done = p.doneWeek === wk;
+        var cb = el('input', { type: 'checkbox', id: 'plan-' + p.id }); cb.checked = done;
+        cb.addEventListener('change', function () { p.doneWeek = cb.checked ? wk : ''; persist(); renderPlan(); });
+        var kids = [el('label', {}, [cb, el('span', { class: 't', text: p.text || (sj ? sj.name : 'Revision') })]), el('span', { class: 'tag', text: p.mins + ' min' })];
+        if (sj) {
+          kids.push(el('span', { class: 'tag', text: sj.name, title: subjectLabel(sj) }));
+          var go = el('button', { type: 'button', class: 'btn plain', text: 'Start' });
+          go.addEventListener('click', function () { S.ui.subjectId = sj.id; persist(); setView('study'); renderTimer(); });
+          kids.push(go);
+        }
+        var x = el('button', { type: 'button', class: 'x', title: 'Delete', 'aria-label': 'Delete slot', text: '\u00d7' });
+        x.addEventListener('click', function () { removeWithUndo(function () { return S.plan; }, p, 'Slot removed.', renderPlan); });
+        kids.push(x);
+        ul.appendChild(el('li', { class: 'row task' + (done ? ' done' : '') }, kids));
+      });
+      box.appendChild(el('div', {}, [head, el('div', { class: 'block' }, [ul])]));
+    });
+    var sug = planSuggestions(), sl = $('plan-suggest'); sl.textContent = '';
+    $('plan-suggest-box').hidden = !sug.length;
+    sug.forEach(function (r) {
+      var sj = null; S.subjects.forEach(function (s) { if (s.name === r.m.subject) sj = s; });
+      var add = el('button', { type: 'button', class: 'btn plain', text: 'Add' });
+      add.addEventListener('click', function () { addSlot(Number($('plan-day').value), sj ? sj.id : '', r.t.code + ' ' + r.t.title, 30, r.t.id); });
+      sl.appendChild(el('li', { class: 'row' }, [el('span', { class: 'grow' }, [r.t.code + ' ' + r.t.title, el('span', { class: 'sec', text: r.m.subject + ' \u00b7 ' + LEVELS[r.t.level] + ' \u00b7 ' + revisedText(r.t) })]), add]));
+    });
+  }
+  $('plan-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = $('plan-text').value.trim(), mins = Math.max(5, Math.min(240, Number($('plan-mins').value) || 30));
+    if (!text && !$('plan-subject').value) { $('plan-text').focus(); return; }
+    addSlot(Number($('plan-day').value), $('plan-subject').value, text, mins, '');
+    $('plan-text').value = '';
+  });
+
   /* ---------- right bar: session aquarium, week map, bonsai, up next ---------- */
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var side = { fish: {}, colours: {}, tree: null, goalFrac: 0, garden: [], buddy: '', buddyCycle: -1 };
@@ -1742,7 +1858,7 @@
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
     if (document.querySelector('dialog[open]')) return;                    // dialogs close themselves with Esc
     if (k === ' ') { if (tag === 'BUTTON' || tag === 'A') return; e.preventDefault(); if (T.running) pause(); else start(); return; }
-    var views = ['study', 'tasks', 'topics', 'grades', 'stats', 'settings'], n = Number(k);
+    var views = ['study', 'tasks', 'topics', 'plan', 'grades', 'stats', 'settings'], n = Number(k);
     if (n >= 1 && n <= 6 && k.length === 1) { setView(views[n - 1]); return; }
     if (k === 'n' || k === 'N' || k === '/') { e.preventDefault(); setView('tasks'); $('task-text').focus(); return; }
     if (k === 'p' || k === 'P') { var i = PALETTES.map(function (x) { return x[0]; }).indexOf(S.ui.palette); setPalette(PALETTES[(i + 1) % PALETTES.length][0]); return; }
@@ -1833,7 +1949,7 @@
 
   /* backup */
   $('export').addEventListener('click', function () {
-    var data = { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, settings: S.settings };
+    var data = { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, plan: S.plan, settings: S.settings };
     try {
       var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
@@ -1853,7 +1969,7 @@
           (!d.modules || (Array.isArray(d.modules) && d.modules.every(function (m) { return m && Array.isArray(m.topics); })));
         if (!ok) throw new Error('shape');
         S.subjects = d.subjects; S.activities = d.activities; S.tasks = d.tasks; S.chores = Array.isArray(d.chores) ? d.chores : []; S.grades = Array.isArray(d.grades) ? d.grades : [];
-        S.targets = d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets) ? d.targets : {}; S.sessions = d.sessions;
+        S.targets = d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets) ? d.targets : {}; S.sessions = d.sessions; S.plan = Array.isArray(d.plan) ? d.plan : [];
         if (d.modules) S.modules = d.modules;
         if (d.settings) Object.keys(S.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') S.settings[k] = d.settings[k]; });
         normalise(S);
@@ -1867,10 +1983,10 @@
 
   /* cloud sync (cloud.js) uses these two: what to save, and how to load what it fetched */
   window.studyLogData = function () {
-    return { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, settings: S.settings };
+    return { subjects: S.subjects, activities: S.activities, tasks: S.tasks, chores: S.chores, grades: S.grades, targets: S.targets, sessions: S.sessions, modules: S.modules, plan: S.plan, settings: S.settings };
   };
   window.studyLogApply = function (d) {
-    ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules'].forEach(function (k) { if (Array.isArray(d[k])) S[k] = d[k]; });
+    ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules', 'plan'].forEach(function (k) { if (Array.isArray(d[k])) S[k] = d[k]; });
     if (d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets)) S.targets = d.targets;
     if (d.settings) Object.keys(S.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') S.settings[k] = d.settings[k]; });
     normalise(S);
