@@ -1899,39 +1899,138 @@
   }
 
   // Orbit the moon blob (left sidebar): same clock-driven sky as the bonsai. Asleep at night; by day it blinks and hops with squash and stretch. A dot circles it.
-  var BLOB = ['..XXX...', '.XXXX...', 'XXXXX...', 'XXXXXXXX', 'XXXXXXXX', 'XXXXXXXX', '.XXXXXX.', '..XXXX..'];
-  function ease(u) { return u * u * (3 - 2 * u); }
+  // The blob is drawn like the animals: shaded tiles (dark outline, highlight, shade), re-sampled every frame so it squashes and stretches in pixel steps.
+  // While a focus session runs it walks to a spot and uses a prop that matches the subject (scroll for History, microscope for Biology, and so on).
+  var BLOB_ROWS = [[3, 5], [2, 5], [1, 5], [1, 8], [0, 9], [0, 10], [0, 10], [1, 9], [2, 8], [3, 7]], blobCache = {}, bl = { x: null, from: 0, tx: 0, t0: 0, mode: 'idle', until: 0, dir: 1, arrive: 0 };
+  function ease(u) { u = Math.max(0, Math.min(1, u)); return u * u * (3 - 2 * u); }
+  function hexRgb(s) { var m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(s); if (m) return [1, 2, 3].map(function (i) { return parseInt(m[i], 16); }); m = /(\d+)\D+(\d+)\D+(\d+)/.exec(s); return m ? [+m[1], +m[2], +m[3]] : [110, 155, 255]; }
+  function blobShape(tw, th, flip) {
+    var key = tw + 'x' + th + (flip ? 'f' : ''), sh = blobCache[key];
+    if (sh) return sh;
+    function inside(x, y) { if (x < 0 || y < 0 || x >= tw || y >= th) return false; var r = BLOB_ROWS[Math.min(9, Math.floor((y + 0.5) * 10 / th))], bx = Math.floor((x + 0.5) * 11 / tw); if (flip) bx = 10 - bx; return bx >= r[0] && bx <= r[1]; }
+    function edge(x, y) { return inside(x, y) && !(inside(x - 1, y) && inside(x + 1, y) && inside(x, y - 1) && inside(x, y + 1)); }
+    var g = [];
+    for (var y = 0; y < th; y++) { g.push(''); for (var x = 0; x < tw; x++) {
+      var t = '.';
+      if (inside(x, y)) {
+        if (edge(x, y)) t = 'o';
+        else { var tl = edge(x - 1, y) || edge(x, y - 1), br = edge(x + 1, y) || edge(x, y + 1); t = tl && !br ? 'w' : br && !tl ? 's' : 'x'; }
+      }
+      g[y] += t;
+    } }
+    return (blobCache[key] = { g: g, tw: tw, th: th, ex: [Math.floor(3.5 * tw / 11), Math.floor(7.5 * tw / 11)], ey: Math.floor(5.5 * th / 10) });
+  }
+  function studyProp() {   // which prop the blob uses right now: only while a focus session is running
+    var m = /[?&]study=(\w+)/.exec(location.search); if (m) return m[1];   // ?study=history previews a prop
+    if (!T.running || !isFocus()) return '';
+    var sj = byId(S.subjects, S.ui.subjectId), n = sj ? sj.name.toLowerCase() : '';
+    return /histor/.test(n) ? 'history' : /biolog/.test(n) ? 'biology' : /chem/.test(n) ? 'chemistry' : /phys/.test(n) ? 'physics' : /math/.test(n) ? 'maths' :
+      /italian|french|german|spanish|language/.test(n) && !/english/.test(n) ? 'languages' : /english|literature/.test(n) ? 'english' : /comput/.test(n) ? 'computing' : /design|tech/.test(n) ? 'dt' : 'english';
+  }
+  function drawProp(c, key, ox, ground, S, t) {   // ox = centre x of the prop, ground = y of the floor
+    function px(x, y, col, w, hh) { c.fillStyle = col; c.fillRect(Math.round(ox + x * S), Math.round(y), Math.round((w || 1) * S), Math.round((hh || 1) * S)); }
+    function grid(rows, map, x0, y0) { rows.forEach(function (r, y) { for (var x = 0; x < r.length; x++) if (map[r.charAt(x)]) px(x0 + x, y0 + y * S, map[r.charAt(x)]); }); }
+    var bob = Math.sin(t / 500) * 2, k, i;
+    if (key === 'history') {                                                    // a scroll that rolls open and shut
+      var L = 3 + Math.round(3 * (0.5 + 0.5 * Math.sin(t / 1500))), yb = ground - 3 * S + bob, yt = yb - (L + 1) * S;
+      px(-3.5, yt, '#C9964A', 7, 1); px(-3.5, yt, '#8A5A2B'); px(2.5, yt, '#8A5A2B'); px(-3.5, yb, '#C9964A', 7, 1); px(-3.5, yb, '#8A5A2B'); px(2.5, yb, '#8A5A2B');
+      px(-2.5, yt + S, '#F2E2B8', 5, L);
+      for (k = 0; k < L; k += 2) px(-2, yt + (k + 1.4) * S, '#9A7B4F', 2 + ((k * 7) % 3), 0.35);
+    } else if (key === 'biology') {                                             // a microscope, with the cells it sees in a bubble
+      grid(['..ggg....', '..gdg....', '..ddd....', '..gdg..d.', '..ddd.dd.', '..gdgdd..', '.lllll...', '..ddd....', 'ddddddddd'], { g: '#C8CEDC', d: '#7C869E', l: '#79B8FF' }, -4.5, ground - 9 * S);
+      var cx = ox + 1 * S, cy = ground - 15 * S + bob;
+      for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) { var d = Math.sqrt(dx * dx + dy * dy); if (d <= 4.2) { c.fillStyle = d > 3.3 ? '#CFE8FF' : 'rgba(8,26,44,0.7)'; c.fillRect(Math.round(cx + dx * 4), Math.round(cy + dy * 4), 4, 4); } }
+      for (i = 0; i < 3; i++) { var qx = cx + Math.cos(t / 520 + i * 2.1) * 9, qy = cy + Math.sin(t / 430 + i * 3.3) * 8; c.fillStyle = '#7CFFB2'; c.fillRect(Math.round(qx - 3), Math.round(qy - 3), 6, 6); c.fillStyle = '#1F8F5E'; c.fillRect(Math.round(qx - 1), Math.round(qy - 1), 2, 2); }
+      c.fillStyle = '#CFE8FF'; c.fillRect(Math.round(ox + 0.5 * S), Math.round(ground - 10.5 * S), 3, 3); c.fillRect(Math.round(ox + 0.9 * S), Math.round(ground - 12 * S), 4, 4);
+    } else if (key === 'chemistry') {                                           // a flask with colour-changing liquid and bubbles
+      var liq = 'hsl(' + Math.round(200 + 90 * Math.sin(t / 2200)) + ',80%,62%)';
+      grid(['..g.g..', '..g.g..', '..g.g..', '.g...g.', 'g.....g', 'g.....g', 'ggggggg'], { g: '#6F8CB3' }, -3.5, ground - 7 * S);
+      px(-1.5, ground - 3 * S, liq, 3, 1); px(-2.5, ground - 2 * S, liq, 5, 1); px(-2.5, ground - 2 * S, liq, 5, 1);
+      for (i = 0; i < 4; i++) { var u = ((t / 1600) + i / 4) % 1; c.globalAlpha = 1 - u; c.fillStyle = liq; c.fillRect(Math.round(ox + (-1 + i * 0.7) * S + Math.sin(u * 8 + i) * 3), Math.round(ground - 4 * S - u * 4 * S), 3, 3); }
+      c.globalAlpha = 1;
+    } else if (key === 'physics') {                                             // an atom
+      var ay = ground - 8 * S + bob;
+      for (i = 0; i < 3; i++) {
+        var an = i * Math.PI / 3, ca = Math.cos(an), sa = Math.sin(an);
+        for (k = 0; k < 20; k++) { var p = k / 20 * 6.283, ex = Math.cos(p) * 3.6 * S, ey = Math.sin(p) * 1.3 * S; c.fillStyle = 'rgba(63,182,240,0.45)'; c.fillRect(Math.round(ox + ex * ca - ey * sa), Math.round(ay + ex * sa + ey * ca), 2, 2); }
+        var q = t / 600 + i * 2.1, exx = Math.cos(q) * 3.6 * S, eyy = Math.sin(q) * 1.3 * S; c.fillStyle = '#3FB6F0'; c.fillRect(Math.round(ox + exx * ca - eyy * sa - 2), Math.round(ay + exx * sa + eyy * ca - 2), 5, 5);
+      }
+      c.fillStyle = '#FF8A5C'; c.fillRect(Math.round(ox - S * 0.8), Math.round(ay - S * 0.8), Math.round(S * 1.6), Math.round(S * 1.6)); c.fillStyle = '#FFD27A'; c.fillRect(Math.round(ox - S * 0.4), Math.round(ay - S * 0.5), Math.round(S * 0.6), Math.round(S * 0.6));
+    } else if (key === 'maths') {                                               // a calculator with flickering digits
+      px(-3.5, ground - 8 * S, '#3A4256', 7, 8); px(-2.5, ground - 7 * S, '#9CE8B4', 5, 2);
+      for (i = 0; i < 4; i++) if (Math.sin(Math.floor(t / 280) * 7.3 + i * 4.1) > -0.2) px(-2.2 + i * 1.2, ground - 6.6 * S, '#1F4A30', 0.8, 1.2);
+      var press = Math.floor(t / 450) % 6;
+      for (i = 0; i < 6; i++) px(-2.5 + (i % 3) * 2, ground - (4 - Math.floor(i / 3) * 2) * S, i === press ? '#FFD27A' : '#8A93A8', 1, 1);
+    } else if (key === 'languages') {                                           // a speech bubble that is "talking"
+      var by = ground - 10 * S + bob;
+      px(-4.5, by, '#F4F0E6', 9, 5); px(-3.5, by - 0 * S, '#F4F0E6'); px(-3.5, by + 5 * S, '#F4F0E6', 1, 1); px(-4.5, by + 6 * S, '#F4F0E6', 1, 1);
+      for (i = 0; i < 3; i++) { var on = Math.sin(t / 260 - i * 0.9) > 0; px(-2 + i * 1.6, by + (on ? 1.8 : 2.3) * S, on ? '#3A4256' : '#8A93A8', 1, 1); }
+    } else if (key === 'computing') {                                           // a laptop with typing lines
+      px(-4.5, ground - 6 * S, '#2A3142', 9, 5); px(-3.5, ground - 5 * S, '#0E1A2B', 7, 3); px(-5.5, ground - S, '#8A93A8', 11, 1);
+      for (i = 0; i < 3; i++) px(-3, ground - (4.4 - i) * S, '#7CFFB2', 1 + (Math.floor(t / 220) + i * 3) % 5, 0.5);
+      if (Math.floor(t / 400) % 2) px(-3 + 1 + (Math.floor(t / 220) + 6) % 5, ground - 2.4 * S, '#FFFFFF', 0.5, 0.7);
+    } else if (key === 'dt') {                                                  // a turning gear
+      var gy = ground - 5 * S + bob, rot = t / 900;
+      for (k = 0; k < 8; k++) { var ga = rot + k * Math.PI / 4; c.fillStyle = '#B8C0D6'; c.fillRect(Math.round(ox + Math.cos(ga) * 3.5 * S - S * 0.6), Math.round(gy + Math.sin(ga) * 3.5 * S - S * 0.6), Math.round(S * 1.2), Math.round(S * 1.2)); }
+      for (var yy = -3; yy <= 3; yy++) for (var xx = -3; xx <= 3; xx++) { var dd = Math.sqrt(xx * xx + yy * yy); if (dd <= 3 && dd > 1.2) { c.fillStyle = '#B8C0D6'; c.fillRect(Math.round(ox + xx * S - S / 2), Math.round(gy + yy * S - S / 2), S, S); } }
+    } else {                                                                    // english and everything else: an open book with turning pages
+      grid(['.........', 'wwwww.wwwww', 'wwwww.wwwww', 'wwwww.wwwww', 'bbbbbbbbbbb'].map(function (r) { return r; }), { w: '#F4F0E6', b: '#7A4A2B' }, -5.5, ground - 5 * S);
+      for (i = 0; i < 2; i++) for (k = 0; k < 2; k++) px(-4.5 + i * 6, ground - (3.7 - k * 1.2) * S, '#9AA3B5', 3 - k, 0.35);
+      var f = (t % 2800) / 2800; if (f < 0.4) { var col = Math.round(5 - 10 * (f / 0.4)); px(col, ground - 5.6 * S, '#FFFFFF', 1, 3.8); }
+    }
+  }
   function drawBlob(t) {
-    var cv = $('blob'), g = fitCanvas(cv), c = g.c, T = 4, hr = hourNow(), night = hr < 6.5 || hr >= 20, S2 = Math.max(5, Math.min(8, Math.floor(g.h / 15)));
-    var ground = g.h - 22, cx = g.w / 2, acc = side.colours.accent || '#6E9BFF';
-    drawSky(c, g.w, g.h, T, t);
+    var cv = $('blob'), g = fitCanvas(cv), c = g.c, T2 = 4, hr = hourNow(), prop = studyProp(), night = hr < 6.5 || hr >= 20, asleep = night && !prop, S2 = Math.max(4, Math.min(7, Math.floor(g.h / 20)));
+    var ground = g.h - 22, acc = hexRgb(side.colours.accent || '#6E9BFF'), margin = 7 * S2, spot = g.w * 0.34;
+    var pal = { o: rgbStr(mix(acc, [0, 0, 0], 0.6)), s: rgbStr(mix(acc, [0, 0, 0], 0.28)), x: rgbStr(acc), w: rgbStr(mix(acc, [255, 255, 255], 0.5)) };
+    drawSky(c, g.w, g.h, T2, t);
     c.fillStyle = '#2B1D16'; c.fillRect(0, ground, g.w, g.h); c.fillStyle = side.colours.line; c.fillRect(0, ground, g.w, 1);
-    var cyc = (t % 4600) / 4600, lift = 0, sx = 1, sy = 1;
-    if (night) { var br = Math.sin(t / 1300); sy = 1 + br * 0.035; sx = 1 - br * 0.02; }                       // slow breathing
-    else if (cyc > 0.62) {                                                                                  // crouch, jump, land
-      var u = (cyc - 0.62) / 0.38;
-      if (u < 0.18) { var d = ease(u / 0.18); sy = 1 - 0.16 * d; sx = 1 + 0.12 * d; }
-      else if (u < 0.78) { var j = (u - 0.18) / 0.6; lift = Math.sin(j * Math.PI) * g.h * 0.2; sy = 1 + 0.1 * Math.sin(j * Math.PI); sx = 1 - 0.06 * Math.sin(j * Math.PI); }
-      else { var l = 1 - ease((u - 0.78) / 0.22); sy = 1 - 0.14 * l; sx = 1 + 0.1 * l; }
-    } else { var bob = Math.sin(t / 650); sy = 1 + bob * 0.025; sx = 1 - bob * 0.015; }                          // idle wobble
-    var sh = 1 - lift / (g.h * 0.3);                                                                         // shadow shrinks as it rises
-    c.fillStyle = 'rgba(0,0,0,0.28)'; c.fillRect(cx - 3.4 * S2 * sh, ground - 2, 6.8 * S2 * sh, 3);
-    c.save(); c.translate(cx, ground - lift); c.scale(sx, sy); c.translate(-4 * S2, -8 * S2);
-    c.fillStyle = acc;
-    BLOB.forEach(function (row, y) { for (var x = 0; x < 8; x++) if (row[x] === 'X') c.fillRect(x * S2, y * S2, S2 + 0.5, S2 + 0.5); });
-    var bl = (t % 3400) / 3400, shut = night ? 1 : bl < 0.05 ? Math.sin(bl / 0.05 * Math.PI) : 0, eh = Math.max(S2 * 0.18, S2 * (1 - shut));   // eyes close smoothly
+    for (var gx = 0; gx < g.w; gx += 9) { c.fillStyle = '#3B5E2A'; c.fillRect(gx + ((gx * 7) % 5), ground - 2, 2, 2); c.fillRect(gx + 1 + ((gx * 5) % 4), ground - 3, 1, 1); }   // grass tufts
+    if (bl.x === null || bl.x > g.w - margin || bl.x < margin) { bl.x = prop ? spot : g.w / 2; bl.mode = 'idle'; bl.until = t + 1200; }
+    var lift = 0, sx = 1, sy = 1, air = false;
+    if (asleep) { bl.mode = 'idle'; bl.until = t + 1500; var br = Math.sin(t / 1300); sy = 1 + br * 0.05; sx = 1 - br * 0.03; }       // asleep: slow breathing
+    else if (bl.mode === 'idle') {
+      var bob = Math.sin(t / (prop ? 700 : 420)); sy = 1 + bob * 0.04; sx = 1 - bob * 0.03;
+      if (prop) {
+        if (Math.abs(bl.x - spot) > 4 && t >= bl.until) { bl.from = bl.x; bl.tx = spot; bl.dir = spot > bl.x ? 1 : -1; bl.t0 = t; bl.mode = 'hop'; }     // walk to the study spot
+        else if (Math.abs(bl.x - spot) <= 4) { bl.dir = 1; if (!bl.arrive) bl.arrive = t; }
+      } else {
+        bl.arrive = 0;
+        if (t >= bl.until) {                                                                                                     // plan the next hop
+          var tx = bl.x + (Math.random() - 0.5) * g.w * 0.8; tx = Math.max(margin, Math.min(g.w - margin, tx));
+          if (Math.abs(tx - bl.x) < 24) tx = Math.max(margin, Math.min(g.w - margin, bl.x + (bl.x > g.w / 2 ? -1 : 1) * 40));
+          bl.from = bl.x; bl.tx = tx; bl.dir = tx > bl.x ? 1 : -1; bl.t0 = t; bl.mode = 'hop';
+        }
+      }
+    }
+    if (bl.mode === 'hop' && !asleep) {
+      var u = (t - bl.t0) / 780;
+      if (u >= 1) { bl.x = bl.tx; bl.mode = 'idle'; bl.until = t + 1000 + Math.random() * 2200; }
+      else if (u < 0.2) { var d = ease(u / 0.2); sy = 1 - 0.2 * d; sx = 1 + 0.14 * d; }                                         // crouch
+      else if (u < 0.82) { var j = (u - 0.2) / 0.62; air = true; lift = Math.sin(j * Math.PI) * g.h * 0.2; sy = 1 + 0.14 * Math.sin(j * Math.PI); sx = 1 - 0.1 * Math.sin(j * Math.PI); bl.x = bl.from + (bl.tx - bl.from) * ease(j); }
+      else { var l = 1 - ease((u - 0.82) / 0.18); sy = 1 - 0.18 * l; sx = 1 + 0.12 * l; bl.x = bl.tx; }                              // land
+    }
+    var studying = prop && bl.mode === 'idle' && Math.abs(bl.x - spot) <= 4;
+    if (studying) {                                                                                                              // a little nod while it studies
+      var nod = Math.max(0, Math.sin(t / 900)); sy *= 1 - 0.05 * nod; sx *= 1 + 0.03 * nod;
+      c.globalAlpha = ease((t - bl.arrive) / 500); drawProp(c, prop, spot + 8.5 * S2, ground, S2, t); c.globalAlpha = 1;
+    }
+    var tw = Math.max(7, Math.round(11 * sx)), th = Math.max(6, Math.round(10 * sy)), sp = blobShape(tw, th, bl.dir < 0), px = Math.round(bl.x - tw * S2 / 2), py = Math.round(ground - lift - th * S2);
+    var shw = Math.max(0.4, 1 - lift / (g.h * 0.35)); c.fillStyle = 'rgba(0,0,0,0.28)'; c.fillRect(Math.round(bl.x - 4.5 * S2 * shw), ground - 2, Math.round(9 * S2 * shw), 3);
+    for (var y = 0; y < sp.th; y++) for (var x = 0; x < sp.tw; x++) { var ch = sp.g[y].charAt(x); if (ch === '.') continue; c.fillStyle = pal[ch]; c.fillRect(px + x * S2, py + y * S2, S2 - 1, S2 - 1); }
+    var cyc = (t % 3400) / 3400, shut = asleep || (cyc < 0.045), look = asleep ? 0 : studying ? 1 : bl.dir * (air ? 1 : 0), ey2 = py + sp.ey * S2;     // eyes: closed asleep, quick blink, look at the prop
     c.fillStyle = '#0B1020';
-    c.fillRect(2 * S2, 4 * S2 + (S2 - eh) / 2 + (night ? S2 * 0.3 : 0), S2, eh); c.fillRect(5 * S2, 4 * S2 + (S2 - eh) / 2 + (night ? S2 * 0.3 : 0), S2, eh);
-    c.restore();
-    var a = t / 1500, by = ground - lift - 8 * S2 * sy;
-    for (var k = 3; k >= 0; k--) {                                                                           // orbiting dot with a fading trail
-      var ak = a - k * 0.16, ox = cx + Math.cos(ak) * 5.6 * S2, oy = by + 3 * S2 + Math.sin(ak) * 2.4 * S2, back = Math.sin(ak) < 0;
-      c.globalAlpha = (back ? 0.4 : 1) * (1 - k * 0.24); c.fillStyle = acc; var sz = (k ? 2 : 3) + (back ? 0 : 1); c.fillRect(ox - sz / 2, oy - sz / 2, sz, sz);
+    sp.ex.forEach(function (ex) { var ex2 = px + (ex + look) * S2; if (shut) c.fillRect(ex2, ey2 + S2 * 0.5, S2 - 1, 2); else c.fillRect(ex2, ey2, S2 - 1, S2 - 1); });
+    if (!asleep) { c.fillStyle = 'rgba(255,140,170,0.65)'; c.fillRect(px + (sp.ex[0] - 1 + look) * S2, ey2 + S2, S2 - 1, S2 / 2); c.fillRect(px + (sp.ex[1] + 1 + look) * S2, ey2 + S2, S2 - 1, S2 / 2); }   // cheeks
+    var a = t / 1500, mx = bl.x, my = py + th * S2 * 0.42;
+    for (var k = 3; k >= 0; k--) {                                                                                               // the orbiting dot, with a short fading trail
+      var ak = a - k * 0.18, ox = mx + Math.cos(ak) * 8 * S2, oy = my + Math.sin(ak) * 3 * S2, back = Math.sin(ak) < 0, sz = (back ? 3 : 4) - (k > 1 ? 1 : 0);
+      c.globalAlpha = (back ? 0.45 : 1) * (1 - k * 0.22); c.fillStyle = pal.w; c.fillRect(Math.round(ox - sz / 2), Math.round(oy - sz / 2), sz, sz);
     }
     c.globalAlpha = 1;
-    if (night) for (var z = 0; z < 3; z++) {                                                                  // floating z's
+    if (asleep) for (var z = 0; z < 3; z++) {                                                                                     // floating z's
       var q = ((t / 3200) + z / 3) % 1; c.globalAlpha = Math.sin(q * Math.PI) * 0.9; c.fillStyle = '#FFF4DC';
-      var zs = 3 + z * 1.5; c.fillRect(cx + 3.5 * S2 + q * 16 + Math.sin(q * 9) * 2, by - 4 - q * 34, zs, zs);
+      var zs = 3 + z * 1.5; c.fillRect(Math.round(bl.x + 3 * S2 + q * 16 + Math.sin(q * 9) * 2), Math.round(py - 4 - q * 34), zs, zs);
     }
     c.globalAlpha = 1;
   }

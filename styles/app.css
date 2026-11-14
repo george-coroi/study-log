@@ -346,7 +346,7 @@ select, input[type="text"], input[type="number"], input[type="date"] { box-shado
 .wtile:hover, .wtile:focus-visible { outline: 1px solid var(--text); }
 .tree-card { padding: var(--s-2); }
 .tree { display: block; width: 100%; height: 230px; }
-.blob { display: block; width: 100%; height: 120px; }
+.blob { display: block; width: 100%; height: 140px; }
 .side-blob { margin: 0 var(--s-1) var(--s-2); }
 .app.collapsed .side-blob { display: none; }
 @media (max-width: 720px), (max-height: 640px) { .side-blob { display: none; } }
