@@ -52,6 +52,7 @@
       <button type="button" class="nav-item" data-view="stats" title="Stats"><svg class="ic"><use href="#i-chart"/></svg><span class="lbl">Stats</span></button>
     </nav>
     <div class="nav-spacer"></div>
+    <div class="block tree-card side-blob"><canvas id="blob" class="blob" role="img" aria-label="Orbit, a pixel moon blob. It sleeps at night, blinks and hops by day, and a small dot circles it."></canvas></div>
     <button type="button" class="nav-item" id="nav-keys" title="Keyboard shortcuts (?)"><svg class="ic"><use href="#i-keys"/></svg><span class="lbl">Shortcuts</span></button>
     <button type="button" class="nav-item" id="nav-settings" data-view="settings" title="Settings"><svg class="ic"><use href="#i-sliders"/></svg><span class="lbl">Settings</span></button>
   </aside>
@@ -399,7 +400,6 @@
       <label class="vol"><span class="label">Volume</span><input type="range" id="snd-vol" min="0" max="100" step="5"></label>
     </section>
     <div class="block tree-card"><canvas id="tree" class="tree" role="img" aria-label="An orange bonsai tree with petals blowing in the wind"></canvas></div>
-    <div class="block tree-card"><canvas id="blob" class="blob" role="img" aria-label="Orbit, a pixel moon blob. It sleeps at night, blinks and hops by day, and a small dot circles it."></canvas></div>
     <section class="block side-card" aria-labelledby="gd-h">
       <h2 id="gd-h">Topic garden</h2>
       <canvas id="garden" class="garden" role="img" aria-label="One flower per science: taller means more confident, more lit petals means more topics rated Confident or better"></canvas>
@@ -1452,7 +1452,7 @@
     for (var i = 1; i <= 6; i++) side.colours[i] = cssVar('--subj-' + i);
     side.colours.ink = cssVar('--text-3'); side.colours.line = cssVar('--separator'); side.colours.accent = cssVar('--accent');
     renderWeekMap(); syncFish(); renderUpNext(); renderGoal(); renderZooNote(); renderSound(); updateClock();
-    if (reduceMotion) drawSide(0);
+    if (reduceMotion) { drawSide(0); if ($("blob").offsetParent) drawBlob(0); }
   }
 
   // Week map: five weeks of tiles, brighter the more you studied that day.
@@ -1898,31 +1898,49 @@
     }
   }
 
-  // Orbit the moon blob: same clock-driven sky as the bonsai. Asleep at night, blinks and hops by day, a dot circles it.
+  // Orbit the moon blob (left sidebar): same clock-driven sky as the bonsai. Asleep at night; by day it blinks and hops with squash and stretch. A dot circles it.
   var BLOB = ['..XXX...', '.XXXX...', 'XXXXX...', 'XXXXXXXX', 'XXXXXXXX', 'XXXXXXXX', '.XXXXXX.', '..XXXX..'];
+  function ease(u) { return u * u * (3 - 2 * u); }
   function drawBlob(t) {
-    var g = fitCanvas($('blob')), c = g.c, T = 4, hr = hourNow(), night = hr < 6.5 || hr >= 20, S2 = 8, ground = Math.round((g.h - 30) / T) * T;
+    var cv = $('blob'), g = fitCanvas(cv), c = g.c, T = 4, hr = hourNow(), night = hr < 6.5 || hr >= 20, S2 = Math.max(5, Math.min(8, Math.floor(g.h / 15)));
+    var ground = g.h - 22, cx = g.w / 2, acc = side.colours.accent || '#6E9BFF';
     drawSky(c, g.w, g.h, T, t);
     c.fillStyle = '#2B1D16'; c.fillRect(0, ground, g.w, g.h); c.fillStyle = side.colours.line; c.fillRect(0, ground, g.w, 1);
-    var cx = Math.round(g.w / 2 / S2) * S2, cyc = (t % 4200) / 4200;
-    var hop = !night && cyc > 0.7 ? Math.abs(Math.sin((cyc - 0.7) / 0.3 * Math.PI)) * 22 : 0;         // a hop every few seconds by day
-    var breathe = Math.round(Math.sin(t / (night ? 1100 : 700)) * 0.6);                              // slow bob; slower asleep
-    var bx = cx - 4 * S2, by = ground - 8 * S2 - Math.round(hop / S2) * S2 + breathe * 2;
-    c.fillStyle = 'rgba(0,0,0,0.25)'; c.fillRect(cx - 3 * S2 + hop / 4, ground - 3, 6 * S2 - hop / 2, 3);     // shadow
-    c.fillStyle = side.colours.accent || '#6E9BFF';
-    BLOB.forEach(function (row, y) { for (var x = 0; x < 8; x++) if (row[x] === 'X') c.fillRect(bx + x * S2, by + y * S2, S2, S2); });
-    var blink = (t % 3600) < 160, eyeY = by + 4 * S2;
+    var cyc = (t % 4600) / 4600, lift = 0, sx = 1, sy = 1;
+    if (night) { var br = Math.sin(t / 1300); sy = 1 + br * 0.035; sx = 1 - br * 0.02; }                       // slow breathing
+    else if (cyc > 0.62) {                                                                                  // crouch, jump, land
+      var u = (cyc - 0.62) / 0.38;
+      if (u < 0.18) { var d = ease(u / 0.18); sy = 1 - 0.16 * d; sx = 1 + 0.12 * d; }
+      else if (u < 0.78) { var j = (u - 0.18) / 0.6; lift = Math.sin(j * Math.PI) * g.h * 0.2; sy = 1 + 0.1 * Math.sin(j * Math.PI); sx = 1 - 0.06 * Math.sin(j * Math.PI); }
+      else { var l = 1 - ease((u - 0.78) / 0.22); sy = 1 - 0.14 * l; sx = 1 + 0.1 * l; }
+    } else { var bob = Math.sin(t / 650); sy = 1 + bob * 0.025; sx = 1 - bob * 0.015; }                          // idle wobble
+    var sh = 1 - lift / (g.h * 0.3);                                                                         // shadow shrinks as it rises
+    c.fillStyle = 'rgba(0,0,0,0.28)'; c.fillRect(cx - 3.4 * S2 * sh, ground - 2, 6.8 * S2 * sh, 3);
+    c.save(); c.translate(cx, ground - lift); c.scale(sx, sy); c.translate(-4 * S2, -8 * S2);
+    c.fillStyle = acc;
+    BLOB.forEach(function (row, y) { for (var x = 0; x < 8; x++) if (row[x] === 'X') c.fillRect(x * S2, y * S2, S2 + 0.5, S2 + 0.5); });
+    var bl = (t % 3400) / 3400, shut = night ? 1 : bl < 0.05 ? Math.sin(bl / 0.05 * Math.PI) : 0, eh = Math.max(S2 * 0.18, S2 * (1 - shut));   // eyes close smoothly
     c.fillStyle = '#0B1020';
-    if (night || blink) { c.fillRect(bx + 2 * S2, eyeY + S2 / 2, S2, S2 / 2); c.fillRect(bx + 5 * S2, eyeY + S2 / 2, S2, S2 / 2); }   // closed eyes
-    else { c.fillRect(bx + 2 * S2, eyeY, S2, S2); c.fillRect(bx + 5 * S2, eyeY, S2, S2); }
-    var a = t / 1700, ox = Math.round((cx + Math.cos(a) * 5.5 * S2) / T) * T, oy = Math.round((by + 3 * S2 + Math.sin(a) * 2.2 * S2) / T) * T;   // the orbiting dot
-    c.fillStyle = side.colours.accent || '#6E9BFF'; c.globalAlpha = Math.sin(a) < 0 ? 0.45 : 1; c.fillRect(ox, oy, T + 2, T + 2); c.globalAlpha = 1;
-    if (night) for (var z = 0; z < 3; z++) {                                                          // floating z's
-      var u = ((t / 2600) + z / 3) % 1; c.globalAlpha = 1 - u; c.fillStyle = '#FFF4DC';
-      c.fillRect(Math.round(cx + 4 * S2 + u * 14 + z * 3), Math.round(by - 2 - u * 30), 3 + z, 3 + z); c.globalAlpha = 1;
+    c.fillRect(2 * S2, 4 * S2 + (S2 - eh) / 2 + (night ? S2 * 0.3 : 0), S2, eh); c.fillRect(5 * S2, 4 * S2 + (S2 - eh) / 2 + (night ? S2 * 0.3 : 0), S2, eh);
+    c.restore();
+    var a = t / 1500, by = ground - lift - 8 * S2 * sy;
+    for (var k = 3; k >= 0; k--) {                                                                           // orbiting dot with a fading trail
+      var ak = a - k * 0.16, ox = cx + Math.cos(ak) * 5.6 * S2, oy = by + 3 * S2 + Math.sin(ak) * 2.4 * S2, back = Math.sin(ak) < 0;
+      c.globalAlpha = (back ? 0.4 : 1) * (1 - k * 0.24); c.fillStyle = acc; var sz = (k ? 2 : 3) + (back ? 0 : 1); c.fillRect(ox - sz / 2, oy - sz / 2, sz, sz);
     }
+    c.globalAlpha = 1;
+    if (night) for (var z = 0; z < 3; z++) {                                                                  // floating z's
+      var q = ((t / 3200) + z / 3) % 1; c.globalAlpha = Math.sin(q * Math.PI) * 0.9; c.fillStyle = '#FFF4DC';
+      var zs = 3 + z * 1.5; c.fillRect(cx + 3.5 * S2 + q * 16 + Math.sin(q * 9) * 2, by - 4 - q * 34, zs, zs);
+    }
+    c.globalAlpha = 1;
   }
-  function drawSide(t, move) { drawTank(t, move); drawTree(t, move); drawBlob(t); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
+  function blobFrame(t) {
+    requestAnimationFrame(blobFrame);
+    if (document.hidden || !$('blob').offsetParent) return;
+    drawBlob(t);
+  }
+  function drawSide(t, move) { drawTank(t, move); drawTree(t, move); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
   function sideFrame(t) {
     requestAnimationFrame(sideFrame);
     if (document.hidden || !$('side').offsetParent) return;
@@ -2137,7 +2155,7 @@
   applyTheme();
   applyCritters();
   buildRing();
-  if (!reduceMotion) requestAnimationFrame(sideFrame);
+  if (!reduceMotion) { requestAnimationFrame(sideFrame); requestAnimationFrame(blobFrame); }
   applySidebar();
   fillSelects();
   renderAll();
