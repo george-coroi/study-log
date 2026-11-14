@@ -155,6 +155,7 @@
                 <button type="button" data-ts="French">French</button>
                 <button type="button" data-ts="Italian">Italian</button>
                 <button type="button" data-ts="History">History</button>
+                <button type="button" data-ts="Design and Technology">D&amp;T</button>
               </div>
               <span class="label num" id="topic-overall"></span>
             </div>
@@ -563,9 +564,20 @@
       ['P2F', 'Elizabethan England. Part two: Life in Elizabethan times', [['P2F.1', 'A Golden Age: living standards, fashions, the gentry, the theatre'], ['P2F.2', 'The poor: causes of poverty, attitudes and government action'], ['P2F.3', 'English sailors: Hawkins, Drake, circumnavigation, Raleigh']]],
       ['P2G', 'Elizabethan England. Part three: Troubles at home and abroad', [['P2G.1', 'Religious matters: Catholics, Puritans, Northern Rebellion, excommunication, missionaries, plots'], ['P2G.2', 'Mary Queen of Scots: the challenge she posed, plots, execution'], ['P2G.3', 'Conflict with Spain: reasons, naval warfare, the Armada']]],
       ['P2H', 'Elizabethan England. Part four: The historic environment (2027 exam: The Spanish Armada)', [['P2H.1', 'The site: location, function, structure and design'], ['P2H.2', 'People connected with the site'], ['P2H.3', 'How the site reflects the culture, values and fashions of the time, and links to the depth study']]]
+    ],
+    'Design and Technology': [
+      ['3.1.1', 'Core: New and emerging technologies', [['3.1.1.1', 'Industry: automation, robotics, tools and equipment'], ['3.1.1.2', 'Enterprise: crowd funding, virtual marketing, co-operatives, fair trade'], ['3.1.1.3', 'Sustainability, people, culture, society and environment'], ['3.1.1.4', 'Production systems: CAD, CAM, FMS, just in time, lean manufacturing'], ['3.1.1.5', 'Critical evaluation: planned obsolescence, design for maintenance, ethics']]],
+      ['3.1.2', 'Core: Energy generation and storage', [['3.1.2.1', 'Fossil fuels and nuclear power'], ['3.1.2.2', 'Renewable energy: wind, solar, tidal, hydro, biomass'], ['3.1.2.3', 'Energy storage: pumped storage, alkaline and rechargeable batteries']]],
+      ['3.1.3', 'Core: Developments in new materials', [['3.1.3.1', 'Modern materials'], ['3.1.3.2', 'Smart materials'], ['3.1.3.3', 'Composite materials'], ['3.1.3.4', 'Technical textiles']]],
+      ['3.1.4', 'Core: Systems approach to designing', [['3.1.4.1', 'Inputs: light, temperature and pressure sensors, switches'], ['3.1.4.2', 'Processes: microcontrollers as counters, timers and decision makers'], ['3.1.4.3', 'Outputs: buzzers, speakers, lamps']]],
+      ['3.1.5', 'Core: Mechanical devices', [['3.1.5.1', 'Types of movement: linear, rotary, reciprocating, oscillating'], ['3.1.5.2', 'Levers: first, second and third order'], ['3.1.5.3', 'Linkages: bell cranks, push/pull'], ['3.1.5.4', 'Rotary systems: cams and followers, gear trains, pulleys and belts']]],
+      ['3.1.6', 'Core: Materials and their working properties', [['3.1.6.1', 'Papers and boards'], ['3.1.6.2', 'Natural and manufactured timbers'], ['3.1.6.3', 'Metals and alloys'], ['3.1.6.4', 'Polymers: thermoforming and thermosetting'], ['3.1.6.5', 'Textiles: natural, synthetic, blended, woven, non-woven, knitted'], ['3.1.6.6', 'Physical properties: absorbency, density, fusibility, conductivity'], ['3.1.6.7', 'Working properties: strength, hardness, toughness, malleability, ductility, elasticity']]],
+      ['3.2', 'Specialist technical principles', [['3.2.1', 'Selection of materials or components'], ['3.2.2', 'Forces and stresses'], ['3.2.3', 'Ecological and social footprint (the six Rs)'], ['3.2.4', 'Sources and origins, life cycle assessment'], ['3.2.5', 'Using and working with materials: properties, modification, shape and form'], ['3.2.6', 'Stock forms, types and sizes'], ['3.2.7', 'Scales of production: prototype, batch, mass, continuous'], ['3.2.8', 'Specialist techniques and processes: tolerances, commercial processes, quality control'], ['3.2.9', 'Surface treatments and finishes']]],
+      ['3.3', 'Designing and making principles', [['3.3.1', 'Investigation, primary and secondary data; design brief and specification'], ['3.3.2', 'Environmental, social and economic challenge'], ['3.3.3', 'The work of others: designers and companies'], ['3.3.4', 'Design strategies'], ['3.3.5', 'Communication of design ideas'], ['3.3.6', 'Prototype development'], ['3.3.7', 'Selection of materials and components'], ['3.3.8', 'Tolerances'], ['3.3.9', 'Material management'], ['3.3.10', 'Specialist tools and equipment'], ['3.3.11', 'Specialist techniques and processes']]],
+      ['NEA', 'Non-exam assessment (contextual challenge)', [['NEA.A', 'A: Identifying and investigating design possibilities'], ['NEA.B', 'B: Producing a design brief and specification'], ['NEA.C', 'C: Generating design ideas'], ['NEA.D', 'D: Developing design ideas'], ['NEA.E', 'E: Realising design ideas (making the prototype)'], ['NEA.F', 'F: Analysing and evaluating']]]
     ]
   };
-  var ID_PREFIX = { 'Maths': 'MA-', 'Further Maths': 'XM-', 'Computer Science': 'CS-', 'French': 'FR-', 'Italian': 'IT-', 'History': 'HI-' };
+  var ID_PREFIX = { 'Maths': 'MA-', 'Further Maths': 'XM-', 'Computer Science': 'CS-', 'French': 'FR-', 'Italian': 'IT-', 'History': 'HI-', 'Design and Technology': 'DT-' };
   var SPEC_NOTE = {
     'Biology': 'OCR Gateway Science A (J247).', 'Chemistry': 'OCR Gateway Science A (J248).', 'Physics': 'OCR Gateway Science A (J249).',
     'Maths': 'Pearson Edexcel GCSE Mathematics 1MA1, Higher tier. The N, A, R, G, P and S references are the specification’s own.',
@@ -573,7 +585,8 @@
     'Computer Science': 'Pearson Edexcel GCSE Computer Science 1CP2. Topics 1 to 5 are Paper 1; Topic 6 is Paper 2 (Python).',
     'French': 'Pearson Edexcel GCSE French 1FR1, Higher tier (first assessed 2026). The specification gives six contexts and a loose list of subjects, not official sub-topics, so the other groups are a study guide.',
     'Italian': 'Pearson Edexcel GCSE Italian 1IN0, Higher tier. The themes and topics are the specification’s own; skills and grammar are grouped as a study guide.',
-    'History': 'AQA GCSE History 8145. Your four options: Germany 1890–1945 and East–West 1945–72 (Paper 1), Health and the people and Elizabethan England (Paper 2). Part titles are AQA’s; some bullets are shortened.'
+    'History': 'AQA GCSE History 8145. Your four options: Germany 1890–1945 and East–West 1945–72 (Paper 1), Health and the people and Elizabethan England (Paper 2). Part titles are AQA’s; some bullets are shortened.',
+    'Design and Technology': 'AQA GCSE Design and Technology 8552. Section numbers are the specification’s own. Paper 1 covers 3.1 to 3.3; the NEA is the coursework project.'
   };
   var LISTS = {};
   [OCR, OTHER].forEach(function (g) { Object.keys(g).forEach(function (k) { LISTS[k] = g[k]; }); });
