@@ -1,4 +1,4 @@
-# Study Log
+# Orbit
 
 A free study tracker for GCSE students. No install, no build step: plain HTML, CSS and JavaScript.
 
@@ -10,6 +10,7 @@ Built with Claude (Anthropic).
 - OCR Gateway Science A topic tracker (confidence and last revised)
 - Grade tracker with a tab for each subject, and target grades
 - A pixel-art sidebar: aquarium, bonsai, topic garden, focus sounds and more
+- Study streaks (30 minutes counts), a weekly revision Plan with spaced-repetition suggestions, and a Habits tab
 - Four colour themes, keyboard shortcuts (press `?`)
 
 ## Accounts and privacy
