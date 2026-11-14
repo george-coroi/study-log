@@ -289,7 +289,7 @@ body {
 /* Type roles */
 h1 { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; }
 .brand { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; display: inline-flex; align-items: center; gap: var(--s-2); }
-.brand svg { width: 20px; height: 20px; flex: none; }
+.brand svg { width: 18px; height: 14px; flex: none; }
 h2 { font: 500 var(--fs-13)/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-2); }
 .label, .phase-label, .note, .row .sec, .bar-val, .bar-date, .pct, .tcode, .code, .time { font-family: var(--font-mono); }
 .label { font-size: var(--fs-12); letter-spacing: 0.02em; }

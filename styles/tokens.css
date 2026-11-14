@@ -151,17 +151,3 @@
   --bg: #130C05; --grid: rgba(255,161,74,0.05); --fill: rgba(255,161,74,0.10); --separator: rgba(255,170,90,0.16);
   --surface: rgba(28,18,8,0.80); --surface-raised: #241709; --seg-thumb: #3B2511;
 }
-
-/* Dropdown menus: solid and themed, so the open list is easy to read in every palette */
-html select {
-  appearance: none; -webkit-appearance: none; cursor: pointer;
-  background-color: color-mix(in srgb, var(--accent) 10%, var(--surface-raised));
-  background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
-  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
-  background-size: 6px 6px, 6px 6px; background-repeat: no-repeat;
-  padding-right: var(--s-6); box-shadow: inset 0 0 0 1px var(--separator);
-}
-html select:hover { box-shadow: inset 0 0 0 1px var(--accent); }
-select option, select optgroup { background: var(--surface-raised); color: var(--text); font-family: var(--font-ui); font-size: var(--fs-15); padding: var(--s-2) var(--s-3); }
-select option:checked { background: var(--accent-solid); color: var(--accent-text); }
-select option:disabled { color: var(--text-3); }
