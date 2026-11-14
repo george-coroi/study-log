@@ -1,0 +1,153 @@
+/* Design tokens. Every colour, radius, shadow, space, type size and duration used by the app is defined here.
+   World: a night-sky pixel grid. Animals made of keyboard characters drift behind glassy panels;
+   pixel type for headings and numbers, mono for labels, plain sans for reading. */
+:root {
+  /* Type */
+  --font-ui: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-display: "Pixelify Sans", "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --fs-12: 12px; --fs-13: 13px; --fs-15: 15px; --fs-17: 17px;
+  --fs-22: 22px; --fs-28: 28px; --fs-34: 34px; --fs-48: 48px;
+
+  /* Light theme: daylight paper with the same grid */
+  --bg: #EEF1F8;
+  --grid: rgba(39, 82, 196, 0.07);
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-raised: #FFFFFF;
+  --text: #12172A;
+  --text-2: #4A5370;
+  --text-3: #5E6680;
+  --separator: rgba(39, 82, 196, 0.14);
+  --fill: rgba(39, 82, 196, 0.08);
+  --accent: #2752C4;
+  --accent-hover: #1E44A8;
+  --accent-text: #FFFFFF;
+  --accent-solid: #2752C4;
+  --accent-solid-hover: #1E44A8;
+  --accent-glow: rgba(39, 82, 196, 0.28);
+  --danger: #C8261C;
+  --success: #0E8A66;
+  --scrim: rgba(6, 9, 20, 0.4);
+  --selection: color-mix(in srgb, var(--accent) 24%, transparent);
+  --seg-thumb: #FFFFFF;
+  --critters-opacity: 0.22;
+  color-scheme: light;
+
+  /* Subject colours: the animal palette, fixed order */
+  --subj-1: #2F6BE0; --subj-2: #0E9E7A; --subj-3: #C98A12;
+  --subj-4: #D0479A; --subj-5: #6D5AE0; --subj-6: #E0612F;
+
+  /* Radius: small and squarish, to sit with the pixels */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  /* Elevation: floating layers only (menus, sheets, toasts) */
+  --shadow-float: 0 1px 2px rgba(6, 9, 20, 0.06), 0 10px 30px rgba(6, 9, 20, 0.14);
+  --shadow-seg: 0 1px 3px rgba(6, 9, 20, 0.16);
+
+  /* Space: 4pt base */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  /* Layout */
+  --sidebar-w: 240px;
+  --sidebar-w-collapsed: 72px;
+  --side-w: 300px;
+  --content-max: 1080px;
+  --control-h: 36px;
+  --control-h-touch: 40px;
+  --row-h: 44px;
+  --cell: 12px;          /* background grid and checker size */
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+  --dur-fill: 600ms;
+}
+
+/* Dark theme: the night sky from the animals page */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #060914; --grid: rgba(110, 150, 255, 0.05);
+    --surface: rgba(13, 18, 34, 0.80); --surface-raised: #151B30;
+    --text: #E8ECF4; --text-2: #A3ACC2; --text-3: #848DA6;
+    --separator: rgba(130, 160, 255, 0.14); --fill: rgba(120, 150, 255, 0.10);
+    --accent: #6E9BFF; --accent-hover: #93B4FF; --accent-solid: #2F5FD0; --accent-solid-hover: #2752C4;
+    --accent-glow: rgba(79, 134, 240, 0.45);
+    --danger: #FF6B5E; --success: #2ED6A0; --scrim: rgba(0, 0, 0, 0.55); --seg-thumb: #1F2846;
+    --critters-opacity: 0.38;
+    --subj-1: #79A9FF; --subj-2: #2ED6A0; --subj-3: #FFC24A; --subj-4: #FF94D8; --subj-5: #A193FF; --subj-6: #FF8A5C;
+    --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 36px rgba(0, 0, 0, 0.55);
+    --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
+  }
+}
+
+/* Manual theme toggle: same values as above */
+:root[data-theme="dark"] {
+  --bg: #060914; --grid: rgba(110, 150, 255, 0.05);
+  --surface: rgba(13, 18, 34, 0.80); --surface-raised: #151B30;
+  --text: #E8ECF4; --text-2: #A3ACC2; --text-3: #848DA6;
+  --separator: rgba(130, 160, 255, 0.14); --fill: rgba(120, 150, 255, 0.10);
+  --accent: #6E9BFF; --accent-hover: #93B4FF; --accent-solid: #2F5FD0; --accent-solid-hover: #2752C4;
+  --accent-glow: rgba(79, 134, 240, 0.45);
+  --danger: #FF6B5E; --success: #2ED6A0; --scrim: rgba(0, 0, 0, 0.55); --seg-thumb: #1F2846;
+  --critters-opacity: 0.38;
+  --subj-1: #79A9FF; --subj-2: #2ED6A0; --subj-3: #FFC24A; --subj-4: #FF94D8; --subj-5: #A193FF; --subj-6: #FF8A5C;
+  --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 36px rgba(0, 0, 0, 0.55);
+  --shadow-seg: 0 1px 3px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+/* Colour themes (set with data-palette on the root). Night is the default above. Each changes the accent and tints the backgrounds. */
+:root[data-palette="sakura"] {
+  --accent: #C2386F; --accent-hover: #A92D5E; --accent-solid: #C2386F; --accent-solid-hover: #A92D5E; --accent-glow: rgba(194,56,111,0.28);
+  --bg: #FBF0F4; --grid: rgba(194,56,111,0.07); --fill: rgba(194,56,111,0.08); --separator: rgba(194,56,111,0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="sakura"]:not([data-theme="light"]) {
+    --accent: #FF8FB8; --accent-hover: #FFB0CF; --accent-glow: rgba(255,143,184,0.40); --accent-solid: #B8336A; --accent-solid-hover: #9E2A59;
+    --bg: #140A10; --grid: rgba(255,130,180,0.05); --fill: rgba(255,130,180,0.10); --separator: rgba(255,140,190,0.16);
+    --surface: rgba(30,14,22,0.80); --surface-raised: #241220; --seg-thumb: #3A1C2C;
+    }
+}
+:root[data-theme="dark"][data-palette="sakura"] {
+  --accent: #FF8FB8; --accent-hover: #FFB0CF; --accent-glow: rgba(255,143,184,0.40); --accent-solid: #B8336A; --accent-solid-hover: #9E2A59;
+  --bg: #140A10; --grid: rgba(255,130,180,0.05); --fill: rgba(255,130,180,0.10); --separator: rgba(255,140,190,0.16);
+  --surface: rgba(30,14,22,0.80); --surface-raised: #241220; --seg-thumb: #3A1C2C;
+}
+:root[data-palette="mint"] {
+  --accent: #0B7A5B; --accent-hover: #096349; --accent-solid: #0B7A5B; --accent-solid-hover: #096349; --accent-glow: rgba(11,122,91,0.28);
+  --bg: #EAF6F1; --grid: rgba(11,122,91,0.07); --fill: rgba(11,122,91,0.08); --separator: rgba(11,122,91,0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="mint"]:not([data-theme="light"]) {
+    --accent: #2ED6A0; --accent-hover: #6DEBC0; --accent-glow: rgba(46,214,160,0.40); --accent-solid: #0B7A5B; --accent-solid-hover: #096349;
+    --bg: #04120E; --grid: rgba(46,214,160,0.05); --fill: rgba(46,214,160,0.10); --separator: rgba(80,230,180,0.15);
+    --surface: rgba(8,26,21,0.80); --surface-raised: #10261F; --seg-thumb: #153A2F;
+    }
+}
+:root[data-theme="dark"][data-palette="mint"] {
+  --accent: #2ED6A0; --accent-hover: #6DEBC0; --accent-glow: rgba(46,214,160,0.40); --accent-solid: #0B7A5B; --accent-solid-hover: #096349;
+  --bg: #04120E; --grid: rgba(46,214,160,0.05); --fill: rgba(46,214,160,0.10); --separator: rgba(80,230,180,0.15);
+  --surface: rgba(8,26,21,0.80); --surface-raised: #10261F; --seg-thumb: #153A2F;
+}
+:root[data-palette="ember"] {
+  --accent: #B45309; --accent-hover: #9A4507; --accent-solid: #B45309; --accent-solid-hover: #9A4507; --accent-glow: rgba(180,83,9,0.28);
+  --bg: #FBF3E8; --grid: rgba(180,83,9,0.07); --fill: rgba(180,83,9,0.08); --separator: rgba(180,83,9,0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="ember"]:not([data-theme="light"]) {
+    --accent: #FFA14A; --accent-hover: #FFBA7A; --accent-glow: rgba(255,161,74,0.40); --accent-solid: #B45309; --accent-solid-hover: #9A4507;
+    --bg: #130C05; --grid: rgba(255,161,74,0.05); --fill: rgba(255,161,74,0.10); --separator: rgba(255,170,90,0.16);
+    --surface: rgba(28,18,8,0.80); --surface-raised: #241709; --seg-thumb: #3B2511;
+    }
+}
+:root[data-theme="dark"][data-palette="ember"] {
+  --accent: #FFA14A; --accent-hover: #FFBA7A; --accent-glow: rgba(255,161,74,0.40); --accent-solid: #B45309; --accent-solid-hover: #9A4507;
+  --bg: #130C05; --grid: rgba(255,161,74,0.05); --fill: rgba(255,161,74,0.10); --separator: rgba(255,170,90,0.16);
+  --surface: rgba(28,18,8,0.80); --surface-raised: #241709; --seg-thumb: #3B2511;
+}
