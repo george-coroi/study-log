@@ -1,25 +1,51 @@
-# Orbit
+<p align="center">
+  <img src="docs/banner.png" alt="Orbit: a calm study tracker with a pixel night sky" width="100%">
+</p>
 
-A free study tracker for GCSE students. No install, no build step: plain HTML, CSS and JavaScript.
+<p align="center">
+  <a href="https://george-coroi.github.io/study-log/"><b>Open Orbit</b></a>
+  &nbsp;/&nbsp; Free &nbsp;/&nbsp; No install &nbsp;/&nbsp; No build step
+</p>
 
-Built with Claude (Anthropic).
+<p align="center">
+  <img src="docs/screenshot.png" alt="The Study tab at night: a Pomodoro ring, the moon blob on the left, and the bonsai on the right" width="90%">
+</p>
 
-- Pomodoro, timer and stopwatch, with a subject and activity for every session
-- Daily and weekly totals
-- School and personal to-do lists
-- OCR Gateway Science A topic tracker (confidence and last revised)
-- Grade tracker with a tab for each subject, and target grades
-- A pixel-art sidebar: aquarium, bonsai, topic garden, focus sounds and more
-- Study streaks (30 minutes counts), a weekly revision Plan with spaced-repetition suggestions, and a Habits tab
-- Four colour themes, keyboard shortcuts (press `?`)
+Orbit is a study tracker for GCSE students. It is plain HTML, CSS and JavaScript, so it opens in any browser. Built with Claude (Anthropic).
+
+## What it does
+
+| Tab | What you get |
+| --- | --- |
+| **Study** | Pomodoro, timer and stopwatch. Every session has a subject and an activity. |
+| **Tasks** | Separate school and personal to-do lists. |
+| **Topics** | OCR Gateway Science A tracker: confidence and last revised, with revision reminders. |
+| **Plan** | A weekly revision plan with spaced-repetition suggestions. |
+| **Habits** | Daily habits and a five-week heat map. |
+| **Grades** | A tab for each subject, with target grades. |
+| **Stats** | Daily and weekly totals. |
+
+Study streaks count a day once you reach 30 minutes. There are four colour themes, and `?` shows the keyboard shortcuts.
+
+## The pixel night sky
+
+The look is a small pixel world that follows the clock and your progress.
+
+- **Orbit, the moon blob** lives in the left sidebar. It hops by day and sleeps at night.
+- **It studies with you.** While a focus timer runs it uses a prop for the subject: a scroll for History, a microscope for Biology, a flask for Chemistry, an atom for Physics, and more.
+- **Outfits unlock with your total hours:** a sprout at 5, a cap at 20, a scarf at 50, a crown at 100.
+- **The right-hand bar** has an aquarium that gains a fish for each session, a bonsai that fills out as you near your daily goal, a topic garden, and focus sounds (white, rain, brown, fire).
+
+Add these to the web address to preview: `?hour=22` (time of day), `?study=biology` (a prop), `?outfit=100` (an outfit).
 
 ## Accounts and privacy
 
-Sign in with Google to keep your log on every device. Without signing in, everything stays in your own browser.
+Without signing in, everything stays in your own browser. Sign in with Google to keep your log on every device.
 
-- The app stores one record per person, containing only their study data. It does not read anything else from your Google account.
+- One record per person, holding only their study data. Nothing else is read from your Google account.
 - Security rules (`firestore.rules`) mean you can only read and write your own record.
-- Signing out clears the data from that device (it stays in your account), so shared school computers stay private.
+- Signing out clears the data from that device (it stays in your account), so shared computers stay private.
+- The page uses a Content-Security-Policy, and the app never turns typed text into code.
 - If you run your own copy and collect people's Google accounts, you are responsible for looking after them. For under-18s in the UK that means UK GDPR and the ICO Children's Code. Add a short privacy notice and a way to delete accounts.
 
 ## Run your own copy
@@ -29,12 +55,10 @@ Sign in with Google to keep your log on every device. Without signing in, everyt
    - Build > Authentication > Get started > Sign-in method > turn on **Google**.
    - Authentication > Settings > Authorised domains > add `YOURNAME.github.io`.
    - Build > Firestore Database > Create database (production mode), then Rules > paste in `firestore.rules` > Publish.
-   - Project settings > Your apps > Web (`</>`) > copy the config.
+   - Project settings > General > Your apps > Web (`</>`) > copy the config.
 3. **Paste the config** into `firebase-config.js` and commit.
 
-The Google button then appears in Settings > Account. Who has signed in is listed under Authentication > Users in the Firebase console.
-
-Accounts do not work when you open `index.html` straight from your computer (Google blocks that). Use the hosted address.
+The Google button then appears in Settings > Account. Accounts do not work when you open `index.html` straight from your computer (Google blocks that), so use the hosted address.
 
 ## Files
 
@@ -46,9 +70,11 @@ Accounts do not work when you open `index.html` straight from your computer (Goo
 | `cloud.js` | Google sign-in and saving to your account |
 | `firebase-config.js` | your Firebase settings |
 | `firestore.rules` | who can read and write what |
+| `docs/` | the images on this page |
 
 ## Known limits
 
-- The last change wins if you edit on two devices at once.
+- The last change wins if you edit on two devices at once. A tab checks for newer data when you switch back to it.
 - Each person's record is limited to about 900 KB (many thousands of sessions).
 - The timer is not synced between devices, only your data.
+- There is no backup button yet.
