@@ -442,5 +442,6 @@ kbd { display: inline-block; min-width: 1.7em; padding: 2px 6px; text-align: cen
 /* Grade digits stay in the mono face: the pixel face makes 5 and 8 look alike */
 .g-big, .g-badge, .g-val, #view-grades .stat-sm { font-family: var(--font-mono); font-weight: 600; letter-spacing: 0; }
 
-/* Numbers: Pixelify Sans draws a 5 that looks like an S, so digits use the mono face. Words keep the pixel font. */
-.stat, .stat-sm, .clock, .range, .goal-num, .now-time, .buddy-text strong { font-family: var(--font-mono); font-weight: 600; letter-spacing: -0.02em; }
+/* Digits come from Tiny5 (Pixelify Sans draws a 5 like an S); letters stay Pixelify Sans. Tiny5 has one weight, so do not fake bold. */
+body { font-synthesis-weight: none; }
+.clock { font-size: calc(var(--fs-48) * 1.2); }   /* Tiny5 digits run small next to the other pixel face */
