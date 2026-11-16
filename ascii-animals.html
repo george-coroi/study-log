@@ -253,15 +253,31 @@ function burst(x, y) {
 }
 
 function draw(o, t) {
-  var sp = SPRITES[o.k], pal = sp.pal, cells = sp.cells[o.frame], s = o.s, tick = Math.floor(t / 240);
-  var w = sp.w * s, h = sp.h * s;
+  var sp = SPRITES[o.k], s = o.s, tick = Math.floor(t / 240);
+  var w = sp.w * s, h = sp.h * s, r = Math.max(w, h) * 0.75;
+  // The tiles and letters only change on a new pose or twinkle tick (about 4 times a second),
+  // so paint them once into a small picture and reuse it every frame. Far fewer text draws.
+  var key = o.frame + ":" + tick + ":" + dpr;
+  if (o.ck !== key) { o.ck = key; paint(o, sp, tick, w, h, r); }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  var ga = 0.6 + 0.4 * o.depth; ctx.globalAlpha = ga;
+  ctx.globalAlpha = 0.6 + 0.4 * o.depth;
   ctx.translate(o.x, o.y); ctx.rotate(o.ang);
   if (o.dir < 0) ctx.scale(-1, 1);
+  var d = o.cv.width / dpr;
+  ctx.drawImage(o.cv, -r, -r, d, d);
+}
+
+function paint(o, sp, tick, w, h, r) {
+  var pal = sp.pal, cells = sp.cells[o.frame], s = o.s;
+  if (!o.cv) o.cv = document.createElement("canvas");
+  o.cv.width = o.cv.height = Math.ceil(r * 2 * dpr);   // setting the size also clears it
+  var ctx = o.cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, r * dpr, r * dpr);
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "700 " + Math.round(s * 0.8) + "px ui-monospace, 'Cascadia Mono', Consolas, monospace";
 
   // Soft glow behind the animal.
-  var r = Math.max(w, h) * 0.75, g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+  var g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
   g.addColorStop(0, rgba(pal[2], 0.22)); g.addColorStop(1, rgba(pal[2], 0));
   ctx.fillStyle = g; ctx.fillRect(-r, -r, r * 2, r * 2);
 
@@ -270,7 +286,7 @@ function draw(o, t) {
     var c = cells[i], n = hash(o.seed, i, 7), twinkle = hash(o.seed, i, tick);
     var lvl = c.type === 3 ? 5 : c.type === 2 ? 0 : c.type === 1 ? 4 : c.type === 4 ? 3 : Math.max(1, Math.min(4, Math.round(1.2 + c.edge * 2.2 + (n - 0.5) * 1.4 + (twinkle > 0.95 ? 1 : 0))));
     var px = ox + c.x * s, py = oy + c.y * s;
-    ctx.globalAlpha = c.type === 4 ? ga * 0.92 : ga;   // fins and tails are slightly see-through
+    ctx.globalAlpha = c.type === 4 ? 0.92 : 1;   // fins and tails are slightly see-through
     ctx.fillStyle = pal[lvl];
     ctx.fillRect(px + gap / 2, py + gap / 2, s - gap, s - gap);
     // Top edge highlight gives each tile a little depth.
@@ -286,9 +302,7 @@ var last = 0;
 function frame(t) {
   var dt = Math.min(3, (t - last) / 16.67 || 1); last = t;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
-  ctx.textAlign = "center"; ctx.textBaseline = "middle";
   swarm.forEach(function (o) {
-    ctx.font = "700 " + Math.round(o.s * 0.8) + "px ui-monospace, 'Cascadia Mono', Consolas, monospace";
     if (!still) step(o, t, dt);
     draw(o, t);
   });
