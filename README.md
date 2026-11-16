@@ -8,10 +8,16 @@
 </p>
 
 <p align="center">
+  <img src="docs/demo.gif" alt="A short clip from the Orbit launch video" width="70%">
+</p>
+
+<p align="center">
   <img src="docs/screenshot.png" alt="The Study tab at night: a Pomodoro ring, the moon blob on the left, and the bonsai on the right" width="90%">
 </p>
 
-Orbit is a study tracker for GCSE students. It is plain HTML, CSS and JavaScript, so it opens in any browser. Built with Claude (Anthropic).
+Orbit is a study tracker for GCSE students, built by a GCSE student. It is plain HTML, CSS and JavaScript, so it opens in any browser. Built with Claude (Anthropic).
+
+If it helps your revision, a star on this page helps other students find it.
 
 ## What it does
 
@@ -19,7 +25,7 @@ Orbit is a study tracker for GCSE students. It is plain HTML, CSS and JavaScript
 | --- | --- |
 | **Study** | Pomodoro, timer and stopwatch. Every session has a subject and an activity. |
 | **Tasks** | Separate school and personal to-do lists. |
-| **Topics** | Topic lists with a confidence rating and last-revised date for each, plus revision reminders. Science follows OCR Gateway A. Maths (1MA1), Further Maths (7M20), Computer Science (1CP2), French (1FR1) and Italian (1IN0) follow the Pearson Edexcel specifications. You can edit any list. |
+| **Topics** | Topic lists with a confidence rating and last-revised date for each, plus revision reminders. Science follows OCR Gateway A. Maths (1MA1), Further Maths (7M20), Computer Science (1CP2), French (1FR1) and Italian (1IN0) follow the Pearson Edexcel specifications. History (8145) and Design and Technology (8552) follow AQA. You can edit any list. |
 | **Plan** | A weekly revision plan with spaced-repetition suggestions. |
 | **Habits** | Daily habits and a five-week heat map. |
 | **Grades** | A tab for each subject, with target grades. |
