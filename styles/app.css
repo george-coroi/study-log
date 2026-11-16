@@ -276,13 +276,14 @@ dialog.sheet::backdrop { background: var(--scrim); }
 /* ================= Pixel world =================
    Night-sky grid, checkerboard details, segmented pixel bars, square markers.
    Pixel type for headings and numbers, mono for labels and data, sans for reading. */
-body {
-  background-color: var(--bg);
+body { background-color: var(--bg); }
+/* The grid sits on its own fixed layer: same look as a fixed background, but scrolling no longer repaints the page. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: var(--cell) var(--cell);
-  background-attachment: fixed;
 }
 .critters { color-scheme: normal; /* must match the framed page or the browser paints it opaque */ position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 0; pointer-events: none; opacity: var(--critters-opacity); }
 .app { position: relative; z-index: 1; }
