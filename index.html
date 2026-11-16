@@ -858,10 +858,14 @@
     if (T.mode === 'stopwatch') { sec = Math.floor(el_ / 1000); frac = (el_ % 3600000) / 3600000; }
     else { sec = Math.ceil(Math.max(0, T.targetSec * 1000 - el_) / 1000); frac = Math.max(0, 1 - el_ / (T.targetSec * 1000)); }
     var txt = fmtClock(sec);
-    $('clock').textContent = txt;
-    var lit = Math.ceil(frac * TILES), tiles = $('tiles').children;
-    for (var i = 0; i < tiles.length; i++) tiles[i].setAttribute('class', i < lit ? (i === lit - 1 ? 'on hi' : 'on') : '');
-    document.title = T.running ? txt + ' · Orbit' : 'Orbit';
+    // This runs 4 times a second, so only touch the page when something actually changed.
+    var clock = $('clock'), lit = Math.ceil(frac * TILES), g = $('tiles'), tiles = g.children, title = T.running ? txt + ' · Orbit' : 'Orbit';
+    if (clock.textContent !== txt) clock.textContent = txt;
+    if (g._lit !== lit + ':' + tiles.length) {
+      g._lit = lit + ':' + tiles.length;
+      for (var i = 0; i < tiles.length; i++) tiles[i].setAttribute('class', i < lit ? (i === lit - 1 ? 'on hi' : 'on') : '');
+    }
+    if (document.title !== title) document.title = title;
     if (typeof renderNow === 'function' && $('now')) renderNow(txt, frac);
   }
 
