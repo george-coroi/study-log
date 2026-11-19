@@ -161,3 +161,12 @@
 .daylabels { display: flex; justify-content: space-between; margin-top: 4px; font: 11px var(--font-mono); color: var(--text-3); }
 
 [data-look="minimal"] :is(.toast, dialog.sheet) { background: var(--surface-raised); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* ---------- design pass: spacing and leftover pixel/mono type ---------- */
+/* Habit days: the label sits above the day choices, with the choices spaced like the other tabs */
+[data-look="minimal"] #habit-days-label { display: block; margin-bottom: var(--s-2); }
+[data-look="minimal"] #habit-days { gap: var(--s-4); flex-wrap: wrap; }
+[data-look="minimal"] #habit-sky { max-width: 280px; }
+/* Numbers and small tabs read in Geist, not the mono/pixel fallback */
+[data-look="minimal"] :is(.row .val, .bar-day, .tab, .g-big, .g-badge, .g-val, .g-date, #view-grades .stat-sm, .game-bar) { font-family: var(--font-ui); letter-spacing: 0; font-weight: 500; }
+[data-look="minimal"] .tab { border-radius: 999px; }

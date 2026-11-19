@@ -19,6 +19,7 @@
     ['text', 'text-2', 'text-3', 'accent', 'separator', 'fill', 'danger', 'success', 'bg'].forEach(function (n) { C[n] = cs.getPropertyValue('--' + n).trim(); });
     C.subj = [1, 2, 3, 4, 5, 6].map(function (i) { return cs.getPropertyValue('--subj-' + i).trim(); });
     C.font = cs.getPropertyValue('--font-display').trim() || 'monospace';
+    C.min = document.documentElement.getAttribute('data-look') === 'minimal';
   }
   function size(w, h) {
     var d = Math.min(2, window.devicePixelRatio || 1);
@@ -36,6 +37,9 @@
   function block(x, y, w, h, col, seed, alpha) {
     if (w < 1 || h < 1) return;
     ctx.globalAlpha = alpha == null ? 1 : alpha;
+    if (C.min) {   // Minimal look: flat rounded blocks, no characters
+      ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(x + 0.5, y + 0.5, w - 1, h - 1, Math.min(4, w / 4, h / 4)); ctx.fill(); ctx.globalAlpha = 1; return;
+    }
     tile(x, y, w, h, col);
     tile(x, y, w, Math.max(1, h * 0.16), 'rgba(255,255,255,0.16)');
     var s = Math.min(w, h);
@@ -593,7 +597,7 @@
   function setup() {
     ready = true; cv = $('game-cv'); ctx = cv.getContext('2d');
     colours();
-    new MutationObserver(function () { colours(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-palette', 'class', 'style'] });
+    new MutationObserver(function () { colours(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-palette', 'data-look', 'class', 'style'] });
     Array.prototype.forEach.call($('game-pick').children, function (b) { b.addEventListener('click', function () { pick(b.getAttribute('data-game')); }); });
     var down = false;
     function at(e, type) {
