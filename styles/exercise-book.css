@@ -330,3 +330,16 @@
 /* grades overview: each subject gets a square of space above and below its two lines */
 [data-look="minimal"][data-skin="book"] .g-row > button { padding: 24px; min-height: 96px; }
 [data-look="minimal"][data-skin="book"] .main .block + p.note { margin-top: 24px !important; }
+
+/* ---------- settings ---------- */
+/* Appearance: the Look row and the light/dark row are two separate groups, 2 squares apart */
+[data-look="minimal"][data-skin="book"] .field:has(> #look-seg) { margin-bottom: 48px !important; }
+[data-look="minimal"][data-skin="book"] .field:has(> #critter-pick) { margin-top: 48px !important; }
+/* a note under a headed box sits inside it, one square in */
+[data-look="minimal"][data-skin="book"] .main :is(div, section):has(> h2 + .block) > p.note { padding: 0 24px 24px; margin: 0 !important; }
+/* a note is followed by a square of space before the button or row under it */
+[data-look="minimal"][data-skin="book"] .block.pad > p.note + * { margin-top: 24px !important; }
+/* activities: outlined 2-square chips with space between */
+[data-look="minimal"][data-skin="book"] .act-list { gap: 24px; padding: 24px; }
+[data-look="minimal"][data-skin="book"] .act { height: 48px; padding: 0 12px 0 24px; gap: 12px; border-radius: 0; background: transparent;
+  box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); }

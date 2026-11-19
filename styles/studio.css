@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,200..800;1,62..125,200..800&display=swap");
+/* Studio theme, after an industrial-objects shop (Blanked Studios): boxes sharing hairlines,
+   small uppercase labels, one electric blue, square buttons, a spotlit timer with a progress line.
+   Sits on top of minimal.css. Light / Dark / System in Settings pick the two modes. */
+
+:root:root:root:root[data-look="minimal"][data-skin="studio"] {
+  --font-ui: "Archivo", system-ui, sans-serif; --font-display: "Archivo", system-ui, sans-serif;
+  --bg: #FFFFFF; --surface: #F3F4F6; --surface-raised: #FFFFFF; --m-timer: #F3F4F6; --m-line2: #B9BFFF;
+  --text: #141414; --text-2: #5E626B; --text-3: #5E626B;
+  --separator: #141414; --fill: rgba(20, 20, 20, 0.05);
+  --accent: #1A1AFF; --accent-hover: #0000DD; --accent-text: #FFFFFF;
+  --accent-solid: #141414; --accent-solid-hover: #000000; --seg-thumb: #141414;
+  --st-spot: linear-gradient(#FFFFFF, #E4E6EA); --st-strip: #1A1AFF; --st-soft-line: #D5D7DD;
+  --r-sm: 0px; --r-md: 0px; --r-lg: 0px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:root:root:root[data-look="minimal"][data-skin="studio"]:not([data-theme="light"]) {
+    --bg: #0B0B0C; --surface: #0B0B0C; --surface-raised: #141416; --m-timer: #0B0B0C; --m-line2: #252C70;
+    --text: #EDEDED; --text-2: #8E8F96; --text-3: #8E8F96;
+    --separator: #2A2B30; --fill: rgba(255, 255, 255, 0.05);
+    --accent: #4B5BFF; --accent-hover: #6B78FF; --accent-text: #FFFFFF;
+    --accent-solid: #EDEDED; --accent-solid-hover: #FFFFFF; --seg-thumb: #EDEDED;
+    --st-spot: linear-gradient(#1D1E22, #0B0B0C 78%); --st-strip: #3343EE; --st-soft-line: #1C1D21;
+  }
+}
+:root:root:root:root[data-look="minimal"][data-skin="studio"][data-theme="dark"] {
+  --bg: #0B0B0C; --surface: #0B0B0C; --surface-raised: #141416; --m-timer: #0B0B0C; --m-line2: #252C70;
+  --text: #EDEDED; --text-2: #8E8F96; --text-3: #8E8F96;
+  --separator: #2A2B30; --fill: rgba(255, 255, 255, 0.05);
+  --accent: #4B5BFF; --accent-hover: #6B78FF; --accent-text: #FFFFFF;
+  --accent-solid: #EDEDED; --accent-solid-hover: #FFFFFF; --seg-thumb: #EDEDED;
+  --st-spot: linear-gradient(#1D1E22, #0B0B0C 78%); --st-strip: #3343EE; --st-soft-line: #1C1D21;
+}
+
+[data-skin="studio"] .field:has(#pal-seg) { display: none !important; }
+
+[data-look="minimal"][data-skin="studio"] body { font-stretch: 94%; }
+/* the blue strip across the top */
+[data-look="minimal"][data-skin="studio"] body::after { content: ""; position: fixed; inset: 0 0 auto; height: 6px; background: var(--st-strip); z-index: 40; pointer-events: none; }
+
+/* ---------- sidebar: italic wide wordmark, uppercase index ---------- */
+[data-look="minimal"][data-skin="studio"] .brand::before { display: none; }
+[data-look="minimal"][data-skin="studio"] .brand { font: italic 800 26px/1 var(--font-display); font-stretch: 125%; letter-spacing: -0.02em; text-transform: uppercase; color: var(--accent); }
+[data-look="minimal"][data-skin="studio"] .nav-item { border-radius: 0; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; border-bottom: 1px solid var(--st-soft-line); }
+[data-look="minimal"][data-skin="studio"] .nav-item .ic { display: none; }
+[data-look="minimal"][data-skin="studio"] .nav-item[aria-current="page"] { background: transparent; font-weight: 600; }
+[data-look="minimal"][data-skin="studio"] .nav-item[aria-current="page"]::after { content: ""; width: 6px; height: 6px; background: var(--accent); margin-left: 8px; }
+[data-look="minimal"][data-skin="studio"] .sidebar { padding-top: calc(var(--s-4) + 6px); }
+@media (max-width: 720px) {
+  [data-look="minimal"][data-skin="studio"] .nav-item { border: 0; }
+  [data-look="minimal"][data-skin="studio"] .nav-item .ic { display: block; }
+  [data-look="minimal"][data-skin="studio"] .nav-item[aria-current="page"]::after { display: none; }
+  [data-look="minimal"][data-skin="studio"] .nav-item[aria-current="page"] .ic { color: var(--accent); }
+}
+
+/* ---------- type: small uppercase labels, big light numbers ---------- */
+[data-look="minimal"][data-skin="studio"] .page-head { border-bottom: 1px solid var(--separator); padding-bottom: var(--s-3); margin-bottom: var(--s-5); }
+[data-look="minimal"][data-skin="studio"] h1 { font: 500 13px/1.4 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; }
+[data-look="minimal"][data-skin="studio"] .page-head .sub { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+[data-look="minimal"][data-skin="studio"] :is(.main, .side) h2 { font: 500 11px/1.3 var(--font-ui); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); }
+[data-look="minimal"][data-skin="studio"] :is(.stat, .goal-num, .now-time) { font-weight: 200; font-stretch: 112%; }
+
+/* ---------- boxes and controls: hairlines, square corners ---------- */
+[data-look="minimal"][data-skin="studio"] .block { border-radius: 0; border: 1px solid var(--separator); background: var(--surface); }
+[data-look="minimal"][data-skin="studio"] .btn { border-radius: 0; text-transform: uppercase; letter-spacing: 0.04em; font-size: 12px; }
+[data-look="minimal"][data-skin="studio"] .btn:not(.primary):not(.plain) { box-shadow: inset 0 0 0 1px var(--text); background: transparent; }
+[data-look="minimal"][data-skin="studio"] .seg { gap: 0; }
+[data-look="minimal"][data-skin="studio"] .seg button { padding: 6px 12px; border: 1px solid var(--separator); margin-right: -1px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+[data-look="minimal"][data-skin="studio"] .seg button[aria-pressed="true"] { background: var(--text); color: var(--bg); box-shadow: none; }
+[data-look="minimal"][data-skin="studio"] .tab { border-radius: 0; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+
+
+/* ---------- data: blue fills, today in ink ---------- */
+[data-look="minimal"][data-skin="studio"] .bar-fill { background: var(--accent); border-radius: 0; }
+[data-look="minimal"][data-skin="studio"] :is(.bar-col[aria-pressed="true"], .bar-col.today) .bar-fill { background: var(--text); }
+[data-look="minimal"][data-skin="studio"] .wtile { border-radius: 0; }
+[data-look="minimal"][data-skin="studio"] .wtile.today { outline: 2px solid var(--text); outline-offset: 0; }
+[data-look="minimal"][data-skin="studio"] :is(.bar, .bar i, .pix, .dayline b) { border-radius: 0; }
+[data-look="minimal"][data-skin="studio"] :is(.sdot, .dot-btn i, .task input[type="checkbox"]) { border-radius: 0; }
+
+/* fixes: solid buttons read in both modes; small button groups wrap instead of running off the panel */
+[data-look="minimal"][data-skin="studio"] .btn.primary { color: var(--bg); }
+[data-look="minimal"][data-skin="studio"] .seg { flex-wrap: wrap; }
+[data-look="minimal"][data-skin="studio"] .seg.sm button { padding: 5px 8px; }
+
+/* ---------- timer: spotlit; one line along the bottom fills up as the session goes ---------- */
+[data-look="minimal"][data-skin="studio"] .timer { background: var(--st-spot); padding-bottom: calc(var(--s-6) + 6px); }
+[data-look="minimal"][data-skin="studio"] .clock { font-weight: 200; font-stretch: 112%; }
+[data-look="minimal"][data-skin="studio"] .timer::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--st-soft-line); }
+[data-look="minimal"][data-skin="studio"] .timer::before { top: auto; bottom: 0; left: 0; height: 6px; z-index: 1; width: calc((1 - var(--frac, 1)) * 100%); transition: width var(--dur-fill) var(--ease-out); }
+[data-look="minimal"][data-skin="studio"] .dots i { border-radius: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--text-2); }
+[data-look="minimal"][data-skin="studio"] .dots i.on { background: var(--accent); box-shadow: none; }
+
+/* ---------- readability (design review) ---------- */
+[data-look="minimal"][data-skin="studio"] h1 { font: 600 28px/1.1 var(--font-display); font-stretch: 112%; text-transform: uppercase; letter-spacing: 0.01em; }
+[data-look="minimal"][data-skin="studio"] .page-head .sub { text-transform: none; letter-spacing: 0; font-size: 14px; }
+[data-look="minimal"][data-skin="studio"] :is(.main, .side) h2 { font-size: 12px; font-weight: 600; color: var(--text); }
+[data-look="minimal"][data-skin="studio"] .nav-item { font-size: 13px; }
+[data-look="minimal"][data-skin="studio"] .btn { font-size: 13px; }
+[data-look="minimal"][data-skin="studio"] .seg button { font-size: 12px; }
+[data-look="minimal"][data-skin="studio"] .btn:disabled { opacity: 1; background: transparent; color: var(--text-2); box-shadow: inset 0 0 0 1px var(--st-soft-line); }
+[data-look="minimal"][data-skin="studio"] .side .seg { display: grid; grid-template-columns: repeat(4, 1fr); }
+[data-look="minimal"][data-skin="studio"] .side .seg button { padding: 6px 0; }
+[data-look="minimal"][data-skin="studio"] .bar { background: var(--st-soft-line); }
+/* stopwatch: --frac already counts up (through each hour), so use it as is */
+[data-look="minimal"][data-skin="studio"] .timer:has(#mode-stopwatch[aria-pressed="true"])::before { width: calc(var(--frac, 0) * 100%); }
