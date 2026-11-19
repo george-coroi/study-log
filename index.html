@@ -920,9 +920,12 @@
     $('t-subject').value = S.ui.subjectId;
     $('t-activity').value = S.ui.activityId;
   }
+  // Only topics for subjects on your list. Ratings for removed subjects are kept, so adding the subject back restores them.
+  function picked(name) { return S.subjects.some(function (s) { return s.name.toLowerCase() === name.toLowerCase(); }); }
+  function myMods() { return S.modules.filter(function (m) { return picked(m.subject); }); }
   function dueCount() {
     var n = 0;
-    S.modules.forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) n++; }); });
+    myMods().forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) n++; }); });
     return n;
   }
   // A day counts toward the streak once you have studied STREAK_MIN seconds. Today never breaks it until the day ends.
@@ -1011,6 +1014,8 @@
   }
   function renderTopics() {
     renderUpNext();
+    var tabs = Array.prototype.filter.call($('topic-subjects').children, function (b) { b.hidden = !picked(b.getAttribute('data-ts')); return !b.hidden; });
+    if (!picked(S.ui.topicSubject)) S.ui.topicSubject = tabs.length ? tabs[0].getAttribute('data-ts') : '';
     var subj = S.ui.topicSubject, filter = S.ui.topicFilter;
     $('topic-spec').textContent = SPEC_NOTE[subj] || '';
     Array.prototype.forEach.call($('topic-subjects').children, function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-ts') === subj)); });
@@ -1413,7 +1418,7 @@
   function todayIdx() { return (new Date().getDay() + 6) % 7; }
   function planSuggestions() {
     var out = [];
-    S.modules.forEach(function (m) { m.topics.forEach(function (t) {
+    myMods().forEach(function (m) { m.topics.forEach(function (t) {
       if (t.level < 1) return;
       var age = t.revised ? daysSince(t.revised) : 999, over = age - REVIEW_GAP[Math.min(t.level, 4)];
       var planned = S.plan.some(function (p) { return p.topicId === t.id; });
@@ -1886,7 +1891,7 @@
     var box = $('upnext'); box.textContent = '';
     var tasks = S.tasks.filter(function (t) { return !t.done; }).slice(0, 3);
     var chores = S.chores.filter(function (t) { return !t.done; }).slice(0, 2), due = [];
-    S.modules.forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) due.push(t); }); });
+    myMods().forEach(function (m) { m.topics.forEach(function (t) { if (isDue(t)) due.push(t); }); });
     due.sort(function (a, b) { return (a.revised || '') < (b.revised || '') ? -1 : 1; });
     function row(lead, text, kind, cls, go, tip) {
       var b = el('button', { type: 'button', class: 'row nx', title: tip || '' }, [lead, el('span', { class: 'grow', text: text }), el('span', { class: cls, text: kind })]);
