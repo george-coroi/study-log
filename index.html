@@ -889,7 +889,7 @@
     var sec, el_ = elapsed(), frac;
     if (T.mode === 'stopwatch') { sec = Math.floor(el_ / 1000); frac = (el_ % 3600000) / 3600000; }
     else { sec = Math.ceil(Math.max(0, T.targetSec * 1000 - el_) / 1000); frac = Math.max(0, 1 - el_ / (T.targetSec * 1000)); }
-    $('ring').style.setProperty('--frac', frac.toFixed(4));
+    $('ring').parentNode.style.setProperty('--frac', frac.toFixed(4));   // on the .timer box, where the progress line reads it
     var txt = fmtClock(sec);
     // This runs 4 times a second, so only touch the page when something actually changed.
     var clock = $('clock'), lit = Math.ceil(frac * TILES), g = $('tiles'), tiles = g.children, title = T.running ? txt + ' · Orbit' : 'Orbit';
