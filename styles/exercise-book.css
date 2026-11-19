@@ -1,0 +1,332 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600&display=swap");
+/* Exercise Book theme. Sits on top of minimal.css (no pixel art) and only changes the world:
+   Paper (light) = white page, black text, blue for data, red for today.
+   Night (dark)  = the same book after dark, softer inks.
+   One texture: 24px squares, drawn inside each box so every box is a piece of squared paper.
+   Light / Dark / System in Settings pick Paper / Night. Extra :root selectors outrank minimal.css. */
+
+:root:root:root:root[data-look="minimal"][data-skin="book"] {
+  --font-ui: "Instrument Sans", system-ui, sans-serif; --font-display: "Instrument Sans", system-ui, sans-serif;
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-raised: #FFFFFF; --m-timer: #FFFFFF; --m-line2: #A9BDF3;
+  --text: #16181D; --text-2: #5B616E; --text-3: #5B616E;
+  --separator: rgba(29, 78, 216, 0.42); --fill: rgba(29, 78, 216, 0.06);
+  --accent: #1D4ED8; --accent-hover: #1E40AF; --accent-text: #FFFFFF;
+  --accent-solid: #16181D; --accent-solid-hover: #000000; --danger: #D0312D; --seg-thumb: #FFFFFF;
+  --eb-red: #D0312D; --eb-sq: rgba(29, 78, 216, 0.11); --eb-head: #EEF3FD; --eb-margin: #E2726D; --eb-cover: #1D4ED8; --eb-label: #FFFFFF;
+  --r-sm: 3px; --r-md: 0px; --r-lg: 0px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:root:root:root[data-look="minimal"][data-skin="book"]:not([data-theme="light"]) {
+    --bg: #15171C; --surface: #15171C; --surface-raised: #1B1E25; --m-timer: #15171C; --m-line2: #2D4170;
+    --text: #ECEDEF; --text-2: #A3A8B4; --text-3: #A3A8B4;
+    --separator: rgba(134, 168, 245, 0.34); --fill: rgba(134, 168, 245, 0.08);
+    --accent: #86A8F5; --accent-hover: #A7C0F8; --accent-text: #15171C;
+    --accent-solid: #ECEDEF; --accent-solid-hover: #FFFFFF; --danger: #F2877E; --seg-thumb: #1B1E25;
+    --eb-red: #F2877E; --eb-sq: rgba(134, 168, 245, 0.10); --eb-head: rgba(134, 168, 245, 0.08); --eb-margin: rgba(242, 135, 126, 0.5); --eb-cover: #0E1014; --eb-label: #1B1E25;
+  }
+}
+:root:root:root:root[data-look="minimal"][data-skin="book"][data-theme="dark"] {
+  --bg: #15171C; --surface: #15171C; --surface-raised: #1B1E25; --m-timer: #15171C; --m-line2: #2D4170;
+  --text: #ECEDEF; --text-2: #A3A8B4; --text-3: #A3A8B4;
+  --separator: rgba(134, 168, 245, 0.34); --fill: rgba(134, 168, 245, 0.08);
+  --accent: #86A8F5; --accent-hover: #A7C0F8; --accent-text: #15171C;
+  --accent-solid: #ECEDEF; --accent-solid-hover: #FFFFFF; --danger: #F2877E; --seg-thumb: #1B1E25;
+  --eb-red: #F2877E; --eb-sq: rgba(134, 168, 245, 0.10); --eb-head: rgba(134, 168, 245, 0.08); --eb-margin: rgba(242, 135, 126, 0.5); --eb-cover: #0E1014; --eb-label: #1B1E25;
+}
+
+/* Exercise Book has its own colours, so the colour-theme picker is hidden */
+[data-skin="book"] .field:has(#pal-seg) { display: none !important; }
+
+/* ---------- the cover: one flat colour holding a label card with the contents ---------- */
+[data-look="minimal"][data-skin="book"] .sidebar { background: var(--eb-cover); border-right: 0; }
+[data-look="minimal"][data-skin="book"] .brand::before { display: none; }
+[data-look="minimal"][data-skin="book"] .brand { color: #FFFFFF; font: 600 13px var(--font-ui); letter-spacing: 0.22em; text-transform: uppercase; }
+[data-look="minimal"][data-skin="book"] .side-top .icon-btn { color: rgba(255, 255, 255, 0.8); }
+[data-look="minimal"][data-skin="book"] .nav-list { background: var(--eb-label); border-radius: 3px; padding: 8px 12px; gap: 0; }
+[data-look="minimal"][data-skin="book"] .nav-list .nav-item { border-radius: 0; height: 32px; padding: 0 4px; border-bottom: 1px solid var(--eb-sq); }
+[data-look="minimal"][data-skin="book"] .nav-list .nav-item:last-child { border-bottom: 0; }
+[data-look="minimal"][data-skin="book"] .nav-item .ic { display: none; }
+[data-look="minimal"][data-skin="book"] .nav-list .nav-item[aria-current="page"] { background: transparent; color: var(--text); font-weight: 600; }
+[data-look="minimal"][data-skin="book"] .nav-list .nav-item[aria-current="page"]::after { content: "←"; color: var(--eb-red); margin-left: auto; }
+[data-look="minimal"][data-skin="book"] .sidebar > .nav-item { color: rgba(255, 255, 255, 0.85); }
+[data-look="minimal"][data-skin="book"] .sidebar > .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
+[data-look="minimal"][data-skin="book"] .sidebar > .nav-item[aria-current="page"] { background: rgba(255, 255, 255, 0.16); color: #FFFFFF; }
+[data-look="minimal"][data-skin="book"] .app.collapsed .nav-list { padding: 4px; }
+@media (max-width: 720px) {
+  [data-look="minimal"][data-skin="book"] .sidebar { background: var(--eb-cover); }
+  [data-look="minimal"][data-skin="book"] .nav-list { background: transparent; padding: 0; }
+  [data-look="minimal"][data-skin="book"] .nav-list .nav-item { color: rgba(255, 255, 255, 0.8); border: 0; height: auto; }
+  [data-look="minimal"][data-skin="book"] .nav-item .ic { display: block; }
+  [data-look="minimal"][data-skin="book"] .nav-list .nav-item[aria-current="page"] { color: #FFFFFF; }
+  [data-look="minimal"][data-skin="book"] .nav-list .nav-item[aria-current="page"]::after { content: none; }
+}
+
+/* ---------- the page: plain paper with a red double margin ---------- */
+[data-look="minimal"][data-skin="book"] .main { position: relative; }
+@media (min-width: 721px) {
+  [data-look="minimal"][data-skin="book"] .main::before { content: ""; position: absolute; top: 0; bottom: 0; left: 42px; width: 4px; border-left: 1px solid var(--eb-margin); border-right: 1px solid var(--eb-margin); pointer-events: none; }
+}
+[data-look="minimal"][data-skin="book"] h1 { font: 600 32px/1.2 var(--font-display); letter-spacing: -0.01em; }
+
+/* ---------- the page is squared paper; boxes are outlines drawn on its lines ---------- */
+[data-look="minimal"][data-skin="book"] :is(.main, .side) {
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--eb-sq) 1px, transparent 1px), linear-gradient(90deg, var(--eb-sq) 1px, transparent 1px);
+  background-size: 24px 24px; background-attachment: local;
+}
+@media (min-width: 721px) { [data-look="minimal"][data-skin="book"] .main { padding: 24px 24px 48px 72px; } }
+/* ---------- everything is built from whole 24px squares ----------
+   Boxes, buttons, rows and heat-map cells start and end on the page's square lines.
+   grid-snap.js rounds what CSS can't (button widths, box heights) up to whole squares. */
+:root:root:root:root[data-look="minimal"][data-skin="book"] { --side-w: 312px; }
+@media (min-width: 721px) {
+  [data-look="minimal"][data-skin="book"] .content > section { width: round(down, 100%, 24px); }
+  [data-look="minimal"][data-skin="book"] .page-head { margin: 0 0 24px; padding: 0; }
+  [data-look="minimal"][data-skin="book"] .page-head h1 { line-height: 48px; }
+  [data-look="minimal"][data-skin="book"] .page-head .sub { line-height: 24px; margin: 0; }
+  [data-look="minimal"][data-skin="book"] .stack, [data-look="minimal"][data-skin="book"] .grid12 { gap: 24px; }
+  [data-look="minimal"][data-skin="book"] .side { padding: 24px 24px 72px; gap: 24px; }
+  [data-look="minimal"][data-skin="book"] .side-row { gap: 24px; }
+}
+@container (min-width: 821px) {
+  [data-look="minimal"][data-skin="book"] .grid12 { grid-template-columns: round(down, calc((100% - 24px) * 7 / 12), 24px) minmax(0, 1fr); }
+  [data-look="minimal"][data-skin="book"] .grid12 > .col-7 { grid-column: 1; }
+  [data-look="minimal"][data-skin="book"] .grid12 > .col-5 { grid-column: 2; }
+}
+/* boxes: an outline on the square lines (the -1px puts the right and bottom edges on the next line) */
+[data-look="minimal"][data-skin="book"] .block { position: relative; overflow: visible; border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+[data-look="minimal"][data-skin="book"] .block::after { content: ""; position: absolute; inset: 0 -1px -1px 0; border: 1px solid var(--separator); pointer-events: none; }
+[data-look="minimal"][data-skin="book"] .block.pad { padding: 24px; }
+[data-look="minimal"][data-skin="book"] :is(.main, .side) h2 {
+  height: 24px; margin: 0; padding: 0;
+  font: 600 12px/24px var(--font-ui); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text);
+}
+/* side cards: heading on the top row of squares, content from the next row */
+[data-look="minimal"][data-skin="book"] .side-card { padding: 0 24px 24px; }
+/* text sits on the rows */
+[data-look="minimal"][data-skin="book"] :is(.main, .side) :is(.label, .note, p) { line-height: 24px; margin-top: 0; margin-bottom: 0; }
+[data-look="minimal"][data-skin="book"] :is(.stat, .goal-num) { line-height: 48px; }
+/* controls: two squares tall */
+[data-look="minimal"][data-skin="book"] .btn { height: 48px; padding: 0 24px; border-radius: 0; }
+[data-look="minimal"][data-skin="book"] :is(select, input[type="text"], input[type="number"], input[type="date"]) { height: 48px; }
+[data-look="minimal"][data-skin="book"] .controls { gap: 24px; }
+[data-look="minimal"][data-skin="book"] .seg { gap: 0; }
+[data-look="minimal"][data-skin="book"] .seg button { height: 48px; padding: 0 12px; }
+[data-look="minimal"][data-skin="book"] .side .seg { display: grid; grid-template-columns: repeat(4, 48px); }
+[data-look="minimal"][data-skin="book"] .side .seg button { padding: 0; }
+[data-look="minimal"][data-skin="book"] .vol { min-height: 48px; }
+/* list rows: two squares tall, the square lines are the dividers */
+[data-look="minimal"][data-skin="book"] :is(.main, .side) .block :is(.row, .nx) { min-height: 48px; padding-top: 0; padding-bottom: 0; border: 0; }
+[data-look="minimal"][data-skin="book"] .nx-foot { padding: 0 24px 24px; border: 0; }
+/* 5-week map: each day is one square of the page, coloured in */
+[data-look="minimal"][data-skin="book"] .wmap { grid-template-columns: repeat(7, 24px); gap: 0; }
+[data-look="minimal"][data-skin="book"] .wday { height: 24px; padding: 0; line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .wtile { width: 24px; height: 24px; aspect-ratio: auto; border-radius: 0; padding: 1px 0 0 1px; background-clip: content-box; box-shadow: none; outline: 0; }
+[data-look="minimal"][data-skin="book"] .wtile.future { box-shadow: none; }
+[data-look="minimal"][data-skin="book"] .wtile.today { outline: 2px solid var(--eb-red); outline-offset: -1px; }
+/* daily goal: number, bar and day line each take whole rows */
+[data-look="minimal"][data-skin="book"] #goal-bar { margin: 8px 0; height: 8px; }
+[data-look="minimal"][data-skin="book"] .dayline { height: 24px; margin-top: 0; }
+/* readable empty and secondary states */
+[data-look="minimal"][data-skin="book"] .dots { height: 24px; align-items: center; margin: 0; }
+[data-look="minimal"][data-skin="book"] .dots i { background: transparent; box-shadow: inset 0 0 0 1px var(--text-2); }
+[data-look="minimal"][data-skin="book"] .dots i.on { background: var(--accent); box-shadow: none; }
+[data-look="minimal"][data-skin="book"] .btn:disabled { opacity: 1; color: var(--text-2); background: transparent; box-shadow: inset 0 0 0 1px var(--separator); }
+
+/* ---------- timer ---------- */
+[data-look="minimal"][data-skin="book"] .timer { background: transparent; overflow: visible; padding: 24px; row-gap: 24px; }
+[data-look="minimal"][data-skin="book"] .ring-center { gap: 0; }
+[data-look="minimal"][data-skin="book"] .phase-label { line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .clock { line-height: 144px; }
+[data-look="minimal"][data-skin="book"] .pickers { grid-template-columns: repeat(2, round(down, calc((100% - 24px) / 2), 24px)); gap: 24px; }
+[data-look="minimal"][data-skin="book"] .clock { font-weight: 300; }
+
+/* ---------- data: blue ink, red for today ---------- */
+[data-look="minimal"][data-skin="book"] .bar-fill { background: var(--accent); border-radius: 0; }
+[data-look="minimal"][data-skin="book"] .bar-col.today .bar-fill { background: var(--eb-red); }
+[data-look="minimal"][data-skin="book"] .bar-col[aria-pressed="true"] .bar-fill { background: var(--text); }
+[data-look="minimal"][data-skin="book"] .bar-col.today[aria-pressed="true"] .bar-fill { background: var(--eb-red); box-shadow: inset 0 0 0 2px var(--text); }
+[data-look="minimal"][data-skin="book"] .bar-col.today .bar-day { color: var(--eb-red); font-weight: 600; }
+[data-look="minimal"][data-skin="book"] .wtile { border-radius: 0; }
+[data-look="minimal"][data-skin="book"] .dayline b { border-radius: 0; }
+[data-look="minimal"][data-skin="book"] .dayline .nowmark { background: var(--eb-red); }
+[data-look="minimal"][data-skin="book"] :is(.sdot, .dot-btn i, .task input[type="checkbox"]) { border-radius: 2px; }
+[data-look="minimal"][data-skin="book"] .dots i { border-radius: 1px; }
+[data-look="minimal"][data-skin="book"] .tab { border-radius: 3px; }
+[data-look="minimal"][data-skin="book"] .tab[aria-selected="true"], [data-look="minimal"][data-skin="book"] .tab[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--accent); color: var(--text); }
+
+/* ---------- whole-square fixes found by measuring ---------- */
+:root:root:root:root[data-look="minimal"][data-skin="book"] { --side-w: 313px; }   /* 1px border + 312px of squares */
+[data-look="minimal"][data-skin="book"] .seg { padding: 0; height: 48px; }
+[data-look="minimal"][data-skin="book"] .side .seg { justify-content: start; height: auto; }
+[data-look="minimal"][data-skin="book"] :is(.main, .side) .field { gap: 0; }
+[data-look="minimal"][data-skin="book"] .timer .ring { height: 192px; }
+[data-look="minimal"][data-skin="book"] .timer > .note { padding: 0; line-height: 24px; font-size: 13px; }
+[data-look="minimal"][data-skin="book"] .controls { padding: 0; margin: 0; }
+[data-look="minimal"][data-skin="book"] .split { gap: 24px; }
+@media (min-width: 700px) { [data-look="minimal"][data-skin="book"] .split { grid-template-columns: repeat(2, round(down, calc((100% - 24px) / 2), 24px)); } }
+[data-look="minimal"][data-skin="book"] .side .seg.sm { gap: 0; }
+
+/* ---------- headings live inside their box, on its top row of squares ---------- */
+[data-look="minimal"][data-skin="book"] :is(#plan-days > div, .main :is(div, section):has(> h2 + .block), .side section:has(> h2 + .block)) { position: relative; }
+[data-look="minimal"][data-skin="book"] :is(#plan-days > div, .main :is(div, section):has(> h2 + .block), .side section:has(> h2 + .block))::after {
+  content: ""; position: absolute; inset: 0 -1px -1px 0; border: 1px solid var(--separator); pointer-events: none;
+}
+[data-look="minimal"][data-skin="book"] :is(#plan-days > div, .main :is(div, section):has(> h2 + .block), .side section:has(> h2 + .block)) > .block::after { display: none; }
+[data-look="minimal"][data-skin="book"] :is(.main :is(div, section):has(> h2 + .block), .side section:has(> h2 + .block)) > h2 { padding: 0 24px; }
+[data-look="minimal"][data-skin="book"] #plan-days > div > .row-between { height: 24px; padding: 0 24px; align-items: center; }
+[data-look="minimal"][data-skin="book"] #plan-days > div > .row-between .label { font-weight: 600; color: var(--text); }
+[data-look="minimal"][data-skin="book"] #plan-days > div { gap: 0; }
+[data-look="minimal"][data-skin="book"] #plan-days li.empty { height: 48px; padding: 0 24px; display: flex; align-items: center; }
+
+/* ---------- squares only where a square means a day ---------- */
+[data-look="minimal"][data-skin="book"] .wtile.l0 { background: transparent; }
+[data-look="minimal"][data-skin="book"] .orbit-week { grid-template-columns: repeat(7, 24px); gap: 0; max-width: none; }
+[data-look="minimal"][data-skin="book"] .orbit-week .wtile.off { background: transparent; box-shadow: none; opacity: 0.35; }
+[data-look="minimal"][data-skin="book"] #habit-sky + .note { margin-top: 24px !important; }
+[data-look="minimal"][data-skin="book"] .orbit-days, [data-look="minimal"][data-skin="book"] #habit-cards { gap: 24px; }
+[data-look="minimal"][data-skin="book"] .orbit-card { gap: 0; }
+[data-look="minimal"][data-skin="book"] .orbit-card .row-between { height: 24px; align-items: center; }
+[data-look="minimal"][data-skin="book"] .orbit-card .row-between + .orbit-week { margin-top: 24px; }
+[data-look="minimal"][data-skin="book"] .orbit-week + .label { margin-top: 24px; }
+/* habit day picker: seven 3x2-square buttons */
+[data-look="minimal"][data-skin="book"] #habit-days { gap: 0; height: 48px; }
+[data-look="minimal"][data-skin="book"] #habit-days button { width: 72px; margin: 0; }
+
+/* ---------- outlined buttons sit exactly on the lines (left/top on one line, right/bottom on the next) ---------- */
+[data-look="minimal"][data-skin="book"] :is(.btn:not(.primary), .side .seg button) { background: transparent; box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); }
+/* focus sound: a 2x2 set of 4x2-square buttons */
+[data-look="minimal"][data-skin="book"] .side .seg.sm { display: grid; grid-template-columns: repeat(2, 96px); gap: 0 24px; height: auto; }
+[data-look="minimal"][data-skin="book"] .side .seg.sm button { width: 96px; height: 48px; padding: 0; margin: 0; color: var(--text); }
+[data-look="minimal"][data-skin="book"] .side .seg.sm button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+[data-look="minimal"][data-skin="book"] .side .vol { height: 48px; margin: 0; display: flex; align-items: center; gap: 24px; }
+[data-look="minimal"][data-skin="book"] .goal-line { height: 48px; align-items: center; }
+[data-look="minimal"][data-skin="book"] :is(#goal-of, .vol .label) { line-height: 48px; }
+
+/* ---------- shared rows and forms, in whole squares ---------- */
+[data-look="minimal"][data-skin="book"] .task-form { gap: 24px; }
+[data-look="minimal"][data-skin="book"] :is(.main, .side) .row, [data-look="minimal"][data-skin="book"] .g-row > button { min-height: 48px; padding: 0 24px; gap: 12px; }
+[data-look="minimal"][data-skin="book"] .g-row { padding: 0; }
+[data-look="minimal"][data-skin="book"] :is(.row, .g-row > button) :is(.grow, .sec, .val, .time, .t, strong, span) { line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .row + .row::before { display: none; }   /* the square lines are the dividers */
+[data-look="minimal"][data-skin="book"] .sum { padding-top: 0; gap: 24px 48px; }
+[data-look="minimal"][data-skin="book"] .sum > div { gap: 0; }
+[data-look="minimal"][data-skin="book"] :is(.stat-sm, .range) { line-height: 48px; }
+[data-look="minimal"][data-skin="book"] #habit-days-label { display: block; line-height: 24px; }
+[data-look="minimal"][data-skin="book"] #habit-days-label { margin: 0 !important; height: 24px; }
+
+/* ---------- bar rows: name on one row of squares, its bar on the next ---------- */
+[data-look="minimal"][data-skin="book"] .rows { display: grid; gap: 0; }
+[data-look="minimal"][data-skin="book"] .rowbar { display: grid; grid-template-rows: 24px 24px; align-items: center; margin: 0; padding: 0; }
+[data-look="minimal"][data-skin="book"] .rowbar .top-line { line-height: 24px; margin: 0; }
+[data-look="minimal"][data-skin="book"] .rowbar .bar { margin: 0; }
+@media (min-width: 700px) { [data-look="minimal"][data-skin="book"] .split { grid-template-columns: round(down, calc((100% - 24px) / 2), 24px) minmax(0, 1fr); } }
+
+/* ---------- empty days: a small dot in the square, like a marked-off box; future days stay blank ---------- */
+[data-look="minimal"][data-skin="book"] .wtile.l0:not(.future):not(.off) { background: radial-gradient(circle, var(--text-2) 0 1.5px, transparent 2px) content-box; opacity: 0.6; }
+
+/* ---------- habit day picker: seven 3x2-square boxes, chosen days filled ---------- */
+[data-look="minimal"][data-skin="book"] #habit-days button { box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); color: var(--text); padding: 0; }
+[data-look="minimal"][data-skin="book"] #habit-days button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); box-shadow: inset 1px 1px 0 var(--accent), 1px 1px 0 var(--accent); }
+[data-look="minimal"][data-skin="book"] .main p.note[style*="margin-top"] { margin-top: 0 !important; }
+/* add-a-row forms inside boxes: whole squares, the lines are the dividers */
+[data-look="minimal"][data-skin="book"] details.add { border-top: 0; }
+[data-look="minimal"][data-skin="book"] details.add summary { height: 48px; padding: 0 24px; display: flex; align-items: center; }
+[data-look="minimal"][data-skin="book"] details.add form { padding: 0 24px 24px; gap: 24px; }
+[data-look="minimal"][data-skin="book"] .add-row { padding: 24px; gap: 24px; border-top: 0; }
+[data-look="minimal"][data-skin="book"] .nums { gap: 24px; }
+/* topic rows: 2 squares tall (more if the title wraps, in whole rows), lines are the dividers */
+[data-look="minimal"][data-skin="book"] .mod summary { min-height: 48px; padding: 0 24px; }
+[data-look="minimal"][data-skin="book"] .trow { padding: 0 24px; min-height: 48px; gap: 0 12px; line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .trow + .trow::before { display: none; }
+[data-look="minimal"][data-skin="book"] .trow .rbtn { justify-self: end; }
+
+/* ---------- breathing room: 2 squares between boxes, a blank row under every heading ---------- */
+@media (min-width: 721px) {
+  [data-look="minimal"][data-skin="book"] .main { padding: 48px 48px 96px 72px; }
+  [data-look="minimal"][data-skin="book"] .page-head { margin-bottom: 48px; }
+  [data-look="minimal"][data-skin="book"] :is(.stack, .grid12, .orbit-days, #habit-cards, .split) { gap: 48px; }
+  [data-look="minimal"][data-skin="book"] .side { padding: 24px 24px 72px; gap: 48px; scrollbar-width: none; }   /* no scrollbar eating the squares */
+  [data-look="minimal"][data-skin="book"] .side::-webkit-scrollbar { display: none; }
+}
+@container (min-width: 821px) {
+  [data-look="minimal"][data-skin="book"] .grid12 { grid-template-columns: round(down, calc((100% - 48px) * 7 / 12), 24px) minmax(0, 1fr); }
+}
+@media (min-width: 700px) { [data-look="minimal"][data-skin="book"] .split { grid-template-columns: round(down, calc((100% - 48px) / 2), 24px) minmax(0, 1fr); } }
+/* side cards: one clear square all round, heading on the first row, a blank row under it */
+[data-look="minimal"][data-skin="book"] .side-card { padding: 24px; }
+[data-look="minimal"][data-skin="book"] .side-card > h2 { margin-bottom: 24px; }
+/* headed boxes in the page: heading on the second row, then a blank row */
+[data-look="minimal"][data-skin="book"] :is(.main :is(div, section):has(> h2 + .block), .side section:has(> h2 + .block)) > h2 { height: 72px; padding: 24px 24px 24px; box-sizing: border-box; line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .block.pad { padding: 24px 48px 48px; }
+[data-look="minimal"][data-skin="book"] .block.pad > .label:first-child { margin-top: 24px; }
+
+/* ---------- timer: mode tabs are outlined 5x2-square boxes; progress runs along the bottom line ---------- */
+[data-look="minimal"][data-skin="book"] .timer { padding: 48px; row-gap: 48px; }
+[data-look="minimal"][data-skin="book"] .timer .seg { display: flex; gap: 24px; height: 48px; }
+[data-look="minimal"][data-skin="book"] .timer .seg button { width: 120px; height: 48px; padding: 0; color: var(--text); font-weight: 500;
+  box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); }
+[data-look="minimal"][data-skin="book"] .timer .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+[data-look="minimal"][data-skin="book"] .timer::before { top: auto; left: 0; bottom: -1px; height: 4px; width: calc(var(--frac, 1) * 100%); z-index: 1; transition: width var(--dur-fill) var(--ease-out); }
+[data-look="minimal"][data-skin="book"] .timer:has(#mode-stopwatch[aria-pressed="true"])::before { width: 0; }
+[data-look="minimal"][data-skin="book"] .ring-center { gap: 0; }
+[data-look="minimal"][data-skin="book"] .dots { height: 24px; gap: 8px; }
+[data-look="minimal"][data-skin="book"] .dots i { width: 8px; height: 8px; }
+/* fields: the underline is the square line itself */
+[data-look="minimal"][data-skin="book"] :is(select, input[type="text"], input[type="number"], input[type="date"]) { box-shadow: 0 1px 0 var(--separator); }
+[data-look="minimal"][data-skin="book"] :is(select, input):hover { box-shadow: 0 1px 0 var(--text-3); }
+[data-look="minimal"][data-skin="book"] :is(select, input):focus { box-shadow: 0 2px 0 var(--accent); }
+[data-look="minimal"][data-skin="book"] .pickers { grid-template-columns: repeat(2, round(down, calc((100% - 48px) / 2), 24px)); gap: 48px; }
+[data-look="minimal"][data-skin="book"] .side .seg.sm { gap: 24px; }
+/* every tab group in the page: outlined boxes 2 squares tall, the chosen one filled */
+[data-look="minimal"][data-skin="book"] .main .seg { display: flex; flex-wrap: wrap; gap: 24px; height: auto; }
+[data-look="minimal"][data-skin="book"] .main .seg button { height: 48px; padding: 0 24px; color: var(--text); font-weight: 500;
+  box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); }
+[data-look="minimal"][data-skin="book"] .main .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+/* plan days: name on the second row of the box, a square of space at the bottom */
+[data-look="minimal"][data-skin="book"] #plan-days > div > .row-between { height: 48px; padding: 24px 24px 0; box-sizing: border-box; }
+[data-look="minimal"][data-skin="book"] #plan-days > div { padding-bottom: 24px; }
+/* small labels that sat between the lines */
+[data-look="minimal"][data-skin="book"] .row-between:has(> #task-count) { height: 48px; margin-bottom: 24px !important; }
+[data-look="minimal"][data-skin="book"] :is(#task-count, #topic-overall) { line-height: 48px; }
+[data-look="minimal"][data-skin="book"] #topic-spec { margin: 24px 0 !important; }
+[data-look="minimal"][data-skin="book"] .trio > div { display: grid; grid-template-rows: 48px 24px; align-items: center; gap: 0; }
+[data-look="minimal"][data-skin="book"] .trio .label { line-height: 24px; }
+[data-look="minimal"][data-skin="book"] .nums .label { line-height: 24px; height: 24px; white-space: nowrap; }
+[data-look="minimal"][data-skin="book"] .row-between:has(> #topic-overall) { flex-wrap: wrap; align-items: flex-start; gap: 24px; }
+/* topic rows: "Mark revised" is a quiet text action, so a long list isn't a wall of boxes */
+[data-look="minimal"][data-skin="book"] .trow .rbtn { box-shadow: none; background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; padding: 0; }
+[data-look="minimal"][data-skin="book"] .trow .rbtn.btn { box-shadow: none !important; }
+[data-look="minimal"][data-skin="book"] #habit-days { gap: 24px; flex-wrap: wrap; height: auto; }
+/* inside a headed box the content lines up with its heading */
+[data-look="minimal"][data-skin="book"] .main :is(div, section):has(> h2 + .block) > .block.pad { padding: 0 24px 24px; }
+[data-look="minimal"][data-skin="book"] .main :is(div, section):has(> h2 + .block) > .block.pad > .label:first-child { margin-top: 0; }
+/* phones: the timer keeps one square of padding and the mode tabs share the row */
+@media (max-width: 720px) {
+  [data-look="minimal"][data-skin="book"] .timer { padding: 24px; row-gap: 24px; max-width: 100%; box-sizing: border-box; }
+  [data-look="minimal"][data-skin="book"] .timer .seg { gap: 0; width: 100%; }
+  [data-look="minimal"][data-skin="book"] .timer .seg button { width: auto; flex: 1; padding: 0 8px; }
+  [data-look="minimal"][data-skin="book"] .pickers { grid-template-columns: 1fr 1fr; gap: 24px; }
+  [data-look="minimal"][data-skin="book"] .timer > .note { white-space: normal; }
+}
+@media (max-width: 720px) {
+  [data-look="minimal"][data-skin="book"] .nav-list .nav-item { min-width: 0; padding: 8px 0; font-size: 11px; }
+}
+
+/* ---------- the page column starts on the margin, not centred, so it always sits on the squares ---------- */
+@media (min-width: 721px) {
+  [data-look="minimal"][data-skin="book"] .content { margin: 0; width: round(down, min(100%, var(--content-max)), 24px); }
+}
+[data-look="minimal"][data-skin="book"] .mod + .mod { margin-top: 24px; }
+/* rows that hold buttons wrap onto whole rows, top-aligned */
+[data-look="minimal"][data-skin="book"] .main .row-between:has(> .seg) { flex-wrap: wrap; align-items: flex-start; gap: 24px; }
+/* topic sections: the divider under the heading is drawn inside, so the body stays whole squares */
+[data-look="minimal"][data-skin="book"] .mod-body { border-top: 0; box-shadow: inset 0 1px 0 var(--separator); }
+/* grades subject tabs: same outlined 2-square boxes as every other tab */
+[data-look="minimal"][data-skin="book"] .main .tabs { gap: 24px; }
+[data-look="minimal"][data-skin="book"] .main .tab { height: 48px; padding: 0 24px; border-radius: 0; background: transparent; color: var(--text); font: 500 14px var(--font-ui);
+  box-shadow: inset 1px 1px 0 var(--separator), 1px 1px 0 var(--separator); }
+[data-look="minimal"][data-skin="book"] .main .tab:is([aria-selected="true"], [aria-pressed="true"]) { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+/* grades overview: each subject gets a square of space above and below its two lines */
+[data-look="minimal"][data-skin="book"] .g-row > button { padding: 24px; min-height: 96px; }
+[data-look="minimal"][data-skin="book"] .main .block + p.note { margin-top: 24px !important; }

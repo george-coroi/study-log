@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="styles/app.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="styles/minimal.css">
+<link rel="stylesheet" href="styles/exercise-book.css">
 <style>
   /* Habits tab */
   .orbit-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; max-width: 15rem; }
@@ -359,6 +360,7 @@
                 <div class="seg" id="look-seg" role="group" aria-labelledby="look-label">
                   <button type="button" data-lk="pixel">Pixel</button>
                   <button type="button" data-lk="minimal">Minimal</button>
+                  <button type="button" data-lk="book">Exercise Book</button>
                 </div>
               </div>
               <div class="seg" id="theme-seg" role="group" aria-label="Theme">
@@ -1406,8 +1408,9 @@
     var p = S.ui.palette, known = PALETTES.some(function (x) { return x[0] === p; });
     if (known && p !== 'night') document.documentElement.setAttribute('data-palette', p); else document.documentElement.removeAttribute('data-palette');
     if (isMin()) document.documentElement.setAttribute('data-look', 'minimal'); else document.documentElement.removeAttribute('data-look');
+    if (S.ui.look === 'book') document.documentElement.setAttribute('data-skin', 'book'); else document.documentElement.removeAttribute('data-skin');   // Exercise Book sits on top of Minimal
   }
-  function isMin() { return S.ui.look === 'minimal'; }   // Minimal look: no pixel art, no animal background
+  function isMin() { return S.ui.look === 'minimal' || S.ui.look === 'book'; }   // Minimal look: no pixel art, no animal background
   // Background animals run in a separate page (ascii-animals.html) shown behind the app.
   function applyCritters() {
     var k = S.ui.animals, f = $('critters');
@@ -2459,5 +2462,6 @@
 </script>
 <script src="firebase-config.js"></script>
 <script src="cloud.js"></script>
+<script src="grid-snap.js"></script>
 </body>
 </html>
