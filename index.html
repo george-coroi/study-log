@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Pixelify+Sans:wght@500;600&display=swap">
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/app.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles/minimal.css">
 <style>
   /* Habits tab */
   .orbit-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; max-width: 15rem; }
@@ -353,6 +355,12 @@
           <div>
             <h2>Appearance</h2>
             <div class="block pad">
+              <div class="field" style="margin-bottom:var(--s-4)"><span class="label" id="look-label">Look</span>
+                <div class="seg" id="look-seg" role="group" aria-labelledby="look-label">
+                  <button type="button" data-lk="pixel">Pixel</button>
+                  <button type="button" data-lk="minimal">Minimal</button>
+                </div>
+              </div>
               <div class="seg" id="theme-seg" role="group" aria-label="Theme">
                 <button type="button" data-th="system">System</button>
                 <button type="button" data-th="light">Light</button>
@@ -658,7 +666,7 @@
       activities: acts.map(function (n) { return { id: uid(), name: n }; }),
       tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(), plan: [], habits: [],
       settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length, gsnake: 0, gbricks: 0, gpong: 0, ggridfill: 0, gsudoku: 0 },
-      ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', subjectsV2: '0', game: 'snake' },
+      ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', look: 'pixel', subjectsV2: '0', game: 'snake' },
       timer: null
     };
   }
@@ -881,6 +889,7 @@
     var sec, el_ = elapsed(), frac;
     if (T.mode === 'stopwatch') { sec = Math.floor(el_ / 1000); frac = (el_ % 3600000) / 3600000; }
     else { sec = Math.ceil(Math.max(0, T.targetSec * 1000 - el_) / 1000); frac = Math.max(0, 1 - el_ / (T.targetSec * 1000)); }
+    $('ring').style.setProperty('--frac', frac.toFixed(4));
     var txt = fmtClock(sec);
     // This runs 4 times a second, so only touch the page when something actually changed.
     var clock = $('clock'), lit = Math.ceil(frac * TILES), g = $('tiles'), tiles = g.children, title = T.running ? txt + ' · Orbit' : 'Orbit';
@@ -1383,6 +1392,7 @@
     $('p-long').value = S.settings.long; $('p-every').value = S.settings.every;
     $('p-stale').value = S.settings.staleDays; $('p-goal').value = S.settings.goalMinutes;
     Array.prototype.forEach.call($('theme-seg').children, function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-th') === S.ui.theme)); });
+    Array.prototype.forEach.call($('look-seg').children, function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lk') === S.ui.look)); });
     $('critter-pick').value = S.ui.animals;
     Array.prototype.forEach.call($('pal-seg').children, function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-pal') === S.ui.palette)); });
   }
@@ -1395,10 +1405,13 @@
     else document.documentElement.removeAttribute('data-theme');
     var p = S.ui.palette, known = PALETTES.some(function (x) { return x[0] === p; });
     if (known && p !== 'night') document.documentElement.setAttribute('data-palette', p); else document.documentElement.removeAttribute('data-palette');
+    if (isMin()) document.documentElement.setAttribute('data-look', 'minimal'); else document.documentElement.removeAttribute('data-look');
   }
+  function isMin() { return S.ui.look === 'minimal'; }   // Minimal look: no pixel art, no animal background
   // Background animals run in a separate page (ascii-animals.html) shown behind the app.
   function applyCritters() {
     var k = S.ui.animals, f = $('critters');
+    if (isMin()) { f.hidden = true; f.removeAttribute('src'); return; }
     f.hidden = k === 'off';
     if (k !== 'off') f.src = 'ascii-animals.html?bg#' + k;
   }
@@ -1957,8 +1970,23 @@
     $('goal-bar').className = 'pix' + (frac >= 1 ? ' done' : '');
     pixBar($('goal-bar'), frac);
     side.goalFrac = frac;
+    renderDayLine();
   }
 
+  // Today's sessions on a 7am to 11pm timeline (the Minimal look shows it).
+  function renderDayLine() {
+    var box = $('day-line'); if (!box) { box = el('div', { id: 'day-line', class: 'dayline', role: 'img' }); $('goal-bar').after(box); box.after(el('div', { class: 'daylabels', 'aria-hidden': 'true' }, [el('span', { text: '7am' }), el('span', { text: '3pm' }), el('span', { text: '11pm' })])); }
+    box.textContent = ''; var today = dkey(new Date()), START = 7, SPAN = 16, n = 0;
+    S.sessions.forEach(function (x) {
+      if (sessionDay(x) !== today) return;
+      var end = new Date(x.at), st = new Date(end - x.seconds * 1000), h = st.getHours() + st.getMinutes() / 60, sj = byId(S.subjects, x.subjectId);
+      var l = Math.max(0, Math.min(100, (h - START) / SPAN * 100)), w = Math.max(.8, x.seconds / 3600 / SPAN * 100); n++;
+      box.appendChild(el('b', { style: 'left:' + l + '%;width:' + w + '%;background:var(--subj-' + ((sj ? sj.c || 0 : 0) % 6 + 1) + ')', title: (sj ? sj.name : 'Session') + ' · ' + fmtDur(x.seconds) }));
+    });
+    var now = new Date(), nh = now.getHours() + now.getMinutes() / 60;
+    if (nh >= START && nh <= START + SPAN) box.appendChild(el('i', { class: 'nowmark', style: 'left:' + ((nh - START) / SPAN * 100) + '%' }));
+    box.setAttribute('aria-label', n + (n === 1 ? ' session' : ' sessions') + ' today, shown on a timeline from 7am to 11pm');
+  }
   // "Now studying": shown on every page except Study while a session is in progress.
   function renderNow(txt, frac) {
     renderBuddy(txt);
@@ -2199,7 +2227,7 @@
     if (document.hidden || !$('blob').offsetParent) return;
     drawBlob(t);
   }
-  function drawSide(t, move) { drawTank(t, move); drawTree(t, move); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
+  function drawSide(t, move) { if (isMin()) return; drawTank(t, move); drawTree(t, move); drawGarden(t); drawZoo(t); if (!$('buddy').hidden) drawBuddy(t); }
   function sideFrame(t) {
     requestAnimationFrame(sideFrame);
     if (document.hidden || !$('side').offsetParent) return;
@@ -2229,6 +2257,9 @@
   $('critter-pick').addEventListener('change', function () { S.ui.animals = $('critter-pick').value; applyCritters(); persist(); });
   $('collapse').addEventListener('click', function () { S.ui.collapsed = S.ui.collapsed === '1' ? '0' : '1'; applySidebar(); persist(); });
   $('due-go').addEventListener('click', function () { S.ui.topicFilter = 'attention'; setView('topics'); });
+  Array.prototype.forEach.call($('look-seg').children, function (b) {
+    b.addEventListener('click', function () { S.ui.look = b.getAttribute('data-lk'); applyTheme(); applyCritters(); persist(); renderSettings(); renderSide(); if (!isMin()) drawSide(0); });
+  });
   Array.prototype.forEach.call($('theme-seg').children, function (b) {
     b.addEventListener('click', function () { S.ui.theme = b.getAttribute('data-th'); applyTheme(); persist(); renderSettings(); renderSide(); });
   });

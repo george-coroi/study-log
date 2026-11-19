@@ -1,0 +1,163 @@
+/* Orbit's "Minimal" look, switched on with data-look="minimal" on the root (Settings → Look).
+   Same shell (sidebar, right panel, bottom tab bar on phones); only the world changes:
+   paper or charcoal ground, one accent, Geist instead of the pixel font, no pixel art or animals.
+   Light / dark / system and the colour themes still apply. The doubled :root selectors outrank tokens.css. */
+
+/* Accent per colour theme: a darker shade for light mode, a lighter one for dark */
+:root { --m-acc-l: #9A5510; --m-acc-d: #E8A657; }
+:root[data-palette="sakura"] { --m-acc-l: #B23A68; --m-acc-d: #EE9BBE; }
+:root[data-palette="mint"] { --m-acc-l: #1F7A52; --m-acc-d: #7FCBA4; }
+:root[data-palette="ember"] { --m-acc-l: #B2461E; --m-acc-d: #F0956B; }
+
+/* Light: warm paper */
+:root:root:root[data-look="minimal"] {
+  --font-ui: "Geist", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-display: "Geist", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Consolas, monospace;
+  --bg: #F7F6F3; --grid: transparent;
+  --surface: #FFFFFF; --surface-raised: #FFFFFF; --m-timer: #FFFFFF; --m-line2: #D3D1CA;
+  --text: #141414; --text-2: #5E5D59; --text-3: #6B6A66;
+  --separator: #E3E1DB; --fill: rgba(20, 20, 20, 0.05);
+  --accent: var(--m-acc-l); --accent-hover: var(--m-acc-l);
+  --accent-text: #FFFFFF; --accent-solid: #141414; --accent-solid-hover: #000000; --accent-glow: transparent;
+  --danger: #B3261E; --success: #1F7A52; --scrim: rgba(0, 0, 0, 0.35);
+  --selection: color-mix(in srgb, var(--accent) 22%, transparent);
+  --seg-thumb: #FFFFFF; --critters-opacity: 0;
+  --subj-1: #2F6BE0; --subj-2: #0E9E7A; --subj-3: #C98A12; --subj-4: #D0479A; --subj-5: #6D5AE0; --subj-6: #E0612F;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.12); --shadow-seg: none;
+  --ease-out: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --dur-fast: 100ms; --dur-base: 180ms; --dur-slow: 280ms;
+  color-scheme: light;
+}
+/* Dark: warm charcoal (system dark, or Dark picked) */
+@media (prefers-color-scheme: dark) {
+  :root:root:root[data-look="minimal"]:not([data-theme="light"]) {
+    --bg: #121211; --surface: #181817; --surface-raised: #1F1F1D; --m-timer: #191918; --m-line2: #3A3934;
+    --text: #EDEBE6; --text-2: #A3A098; --text-3: #8C8981;
+    --separator: #2A2926; --fill: rgba(237, 235, 230, 0.06);
+    --accent: var(--m-acc-d); --accent-hover: var(--m-acc-d);
+    --accent-text: #121211; --accent-solid: #EDEBE6; --accent-solid-hover: #FFFFFF;
+    --danger: #F08A6E; --success: #8FCB9B; --scrim: rgba(0, 0, 0, 0.6); --seg-thumb: #2C2B28;
+    --subj-1: #7FA2F0; --subj-2: #7FC9A4; --subj-3: #E0875C; --subj-4: #B79AE6; --subj-5: #E8C35A; --subj-6: #E39AB8;
+    --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
+  }
+}
+:root:root:root[data-look="minimal"][data-theme="dark"] {
+  --bg: #121211; --surface: #181817; --surface-raised: #1F1F1D; --m-timer: #191918; --m-line2: #3A3934;
+  --text: #EDEBE6; --text-2: #A3A098; --text-3: #8C8981;
+  --separator: #2A2926; --fill: rgba(237, 235, 230, 0.06);
+  --accent: var(--m-acc-d); --accent-hover: var(--m-acc-d);
+  --accent-text: #121211; --accent-solid: #EDEBE6; --accent-solid-hover: #FFFFFF;
+  --danger: #F08A6E; --success: #8FCB9B; --scrim: rgba(0, 0, 0, 0.6); --seg-thumb: #2C2B28;
+  --subj-1: #7FA2F0; --subj-2: #7FC9A4; --subj-3: #E0875C; --subj-4: #B79AE6; --subj-5: #E8C35A; --subj-6: #E39AB8;
+  --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+/* The today timeline only exists in the minimal look */
+:root:not([data-look="minimal"]) .dayline, :root:not([data-look="minimal"]) .daylabels { display: none; }
+
+/* ---------- ground: flat, no grid, no animals, no pixel decoration ---------- */
+[data-look="minimal"] body { font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+[data-look="minimal"] body::before { display: none; }
+[data-look="minimal"] .critters, [data-look="minimal"] .field:has(#critter-pick) { display: none !important; }
+[data-look="minimal"] .page-head::after { display: none; }
+[data-look="minimal"] .page-head h1, [data-look="minimal"] .page-head .sub, [data-look="minimal"] h2 { text-shadow: none; }
+[data-look="minimal"] .block { background: var(--surface); border: 1px solid var(--separator); }
+
+/* ---------- type: Geist throughout, light-weight display numbers ---------- */
+[data-look="minimal"] h1 { font: 500 34px/1.1 var(--font-display); letter-spacing: -0.03em; }
+[data-look="minimal"] h2 { font: 500 13px/1.3 var(--font-ui); text-transform: none; letter-spacing: 0; color: var(--text-2); }
+[data-look="minimal"] :is(.label, .phase-label, .note, .row .sec, .pct, .tcode, .code, .time, .bar-val, .bar-date) { font-family: var(--font-ui); letter-spacing: 0; }
+[data-look="minimal"] :is(.stat, .stat-sm, .range, .goal-num, .now-time) { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; }
+[data-look="minimal"] .stat { font-size: 34px; }
+[data-look="minimal"] :is(.wday, .gd-names, .nx .kind, .nx .kcode, .tip) { font-family: var(--font-mono); }
+
+/* ---------- shell: Orbit's sidebar, quieter ---------- */
+[data-look="minimal"] .sidebar { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; border-right: 1px solid var(--separator); }
+[data-look="minimal"] .brand svg { display: none; }
+[data-look="minimal"] .brand::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+[data-look="minimal"] .brand { font: 600 16px var(--font-ui); letter-spacing: -0.01em; }
+[data-look="minimal"] .nav-item { font-size: 14px; color: var(--text-2); border-radius: var(--r-sm); }
+[data-look="minimal"] .nav-item[aria-current="page"] { background: var(--fill); box-shadow: none; color: var(--text); font-weight: 500; }
+[data-look="minimal"] .nav-item[aria-current="page"] .ic { color: var(--accent); }
+[data-look="minimal"] .side-blob { display: none !important; }
+@media (min-width: 1240px) { [data-look="minimal"] .side { background: var(--bg); border-left: 1px solid var(--separator); } }
+@media (max-width: 720px) { [data-look="minimal"] .sidebar { background: var(--surface); border-top: 1px solid var(--separator); border-right: 0; } }
+
+/* ---------- controls: hairlines and one solid pill ---------- */
+[data-look="minimal"] .btn { border-radius: 999px; font-weight: 500; }
+[data-look="minimal"] .btn.primary { box-shadow: none; }
+[data-look="minimal"] .btn.plain { color: var(--text-2); }
+[data-look="minimal"] .btn.plain:hover:not(:disabled) { color: var(--text); }
+[data-look="minimal"] .seg { background: transparent; padding: 0; gap: 20px; border-radius: 0; }
+[data-look="minimal"] .seg button { padding: 0 0 4px; height: auto; border-radius: 0; color: var(--text-2); }
+[data-look="minimal"] .seg button[aria-pressed="true"] { background: transparent; box-shadow: inset 0 -1.5px 0 var(--text); color: var(--text); font-weight: 400; }
+[data-look="minimal"] .seg.sm { gap: 14px; }
+[data-look="minimal"] :is(select, input[type="text"], input[type="number"], input[type="date"]) { background: transparent; box-shadow: inset 0 -1px 0 var(--separator); border-radius: 0; padding-left: 0; }
+[data-look="minimal"] select { background-color: transparent !important; }
+[data-look="minimal"] select option { background: var(--surface-raised); color: var(--text); }
+[data-look="minimal"] :is(select, input):hover { box-shadow: inset 0 -1px 0 var(--text-3); }
+[data-look="minimal"] :is(select, input):focus { outline: 0; box-shadow: inset 0 -1.5px 0 var(--accent); }
+[data-look="minimal"] .bar-col[aria-pressed="true"] { box-shadow: none; }
+[data-look="minimal"] .swatch[data-pal="night"] i { background: var(--m-acc-d) !important; }
+
+/* ---------- study: the Split timer ---------- */
+[data-look="minimal"] .timer { position: relative; justify-items: start; padding: var(--s-6) var(--s-6) var(--s-6) calc(var(--s-6) + 4px); background: var(--m-timer); overflow: hidden; }
+/* The accent line down the left edge is the time left in this session. */
+[data-look="minimal"] .timer::before {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 4px; background: var(--accent);
+  height: calc(var(--frac, 1) * 100%); transition: height var(--dur-fill) var(--ease-out);
+}
+[data-look="minimal"] .timer .seg { justify-self: start; }
+[data-look="minimal"] .pickers { order: 3; }
+[data-look="minimal"] .ring { order: 2; width: 100%; aspect-ratio: auto; max-width: none; }
+[data-look="minimal"] .ring > svg { display: none; }
+[data-look="minimal"] .ring-center { position: static; align-items: flex-start; gap: 6px; }
+[data-look="minimal"] .clock { font: 300 min(148px, 21vw)/0.9 var(--font-display); letter-spacing: -0.05em; }
+[data-look="minimal"] .phase-label { order: 2; font-size: 15px; color: var(--text-2); }
+[data-look="minimal"] .dots { order: 3; margin-top: 4px; }
+[data-look="minimal"] .dots i { width: 6px; height: 6px; background: var(--separator); }
+[data-look="minimal"] .dots i.on { background: var(--accent); }
+[data-look="minimal"] .cfg { order: 4; justify-content: flex-start; }
+[data-look="minimal"] #cfg-pomo { order: 4; }
+[data-look="minimal"] .controls { order: 5; justify-content: flex-start; gap: var(--s-4); }
+
+/* ---------- bars, meters, heat maps: flat and rounded, no pixel masks ---------- */
+[data-look="minimal"] :is(.bar i, .rowbar .bar i, .bar-fill) { -webkit-mask: none; mask: none; }
+[data-look="minimal"] .bar { height: 3px; border-radius: 2px; background: var(--separator); }
+[data-look="minimal"] .bar i { background: var(--accent); border-radius: 2px; }
+[data-look="minimal"] .bar-fill { border-radius: 3px 3px 1px 1px; background: var(--m-line2); }
+[data-look="minimal"] :is(.bar-col[aria-pressed="true"], .bar-col.today) .bar-fill { background: var(--text); }
+[data-look="minimal"] .pix { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 0; height: 3px; border-radius: 2px; background: var(--separator); overflow: hidden; }
+[data-look="minimal"] .pix i { height: 3px; border-radius: 0; background: transparent; box-shadow: none; }
+[data-look="minimal"] .pix i.on { background: var(--accent); box-shadow: none; }
+[data-look="minimal"] :is(.pix.done, .now.brk .pix) i.on { background: var(--success); }
+[data-look="minimal"] .wtile { border-radius: 3px; background: var(--fill); }
+[data-look="minimal"] .wtile.l1 { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+[data-look="minimal"] .wtile.l2 { background: color-mix(in srgb, var(--accent) 45%, transparent); }
+[data-look="minimal"] .wtile.l3 { background: color-mix(in srgb, var(--accent) 70%, transparent); }
+[data-look="minimal"] .wtile.l4 { background: var(--accent); box-shadow: none; }
+[data-look="minimal"] .wtile.today { outline: 1.5px solid var(--text); outline-offset: 1px; }
+[data-look="minimal"] .wtile.future { background: transparent; box-shadow: inset 0 0 0 1px var(--separator); }
+[data-look="minimal"] .dot-btn[aria-pressed="true"] i { background: var(--accent); border-color: var(--accent); }
+[data-look="minimal"] .task input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+[data-look="minimal"] .task input[type="checkbox"]:checked::after { border-color: var(--accent-text); }
+[data-look="minimal"] :is(.sdot, .dots i, .dot-btn i, .task input[type="checkbox"]) { border-radius: 50%; }
+
+/* ---------- right panel: data only, no pixel art ---------- */
+[data-look="minimal"] .side { grid-template-columns: minmax(0, 1fr); }
+[data-look="minimal"] .side-row { grid-template-columns: 1fr; }
+[data-look="minimal"] :is(.side-row > section:first-child, .tree-card, .side .block:has(#garden), .side .block:has(#zoo), .buddy-cv) { display: none !important; }
+[data-look="minimal"] .goal-num { font-size: 30px; }
+[data-look="minimal"] .wmap { max-width: 260px; }
+/* Today as a timeline from 7am to 11pm */
+.dayline { position: relative; height: 28px; margin-top: 14px; border-left: 1px solid var(--separator); border-right: 1px solid var(--separator); }
+.dayline::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--separator); }
+.dayline b { position: absolute; top: 6px; bottom: 6px; border-radius: 3px; }
+.dayline .nowmark { position: absolute; top: 0; bottom: 0; width: 1.5px; background: var(--text); }
+.daylabels { display: flex; justify-content: space-between; margin-top: 4px; font: 11px var(--font-mono); color: var(--text-3); }
+
+[data-look="minimal"] :is(.toast, dialog.sheet) { background: var(--surface-raised); -webkit-backdrop-filter: none; backdrop-filter: none; }
