@@ -36,6 +36,7 @@
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v6a4 4 0 0 1-8 0zM8 6H5v2a3 3 0 0 0 3 3M16 6h3v2a3 3 0 0 1-3 3M12 14v4M8.5 20h7"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
   <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(-25 12 12)"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="4"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></symbol>
   <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></symbol>
 </svg>
 
@@ -55,6 +56,7 @@
       <button type="button" class="nav-item" data-view="orbit" title="Habits"><svg class="ic"><use href="#i-orbit"/></svg><span class="lbl">Habits</span></button>
       <button type="button" class="nav-item" data-view="grades" title="Grades"><svg class="ic"><use href="#i-trophy"/></svg><span class="lbl">Grades</span></button>
       <button type="button" class="nav-item" data-view="stats" title="Stats"><svg class="ic"><use href="#i-chart"/></svg><span class="lbl">Stats</span></button>
+      <button type="button" class="nav-item" data-view="games" title="Games"><svg class="ic"><use href="#i-game"/></svg><span class="lbl">Games</span></button>
     </nav>
     <div class="nav-spacer"></div>
     <div class="block tree-card side-blob"><canvas id="blob" class="blob" role="img" aria-label="Orbit, a pixel moon blob. It sleeps at night, blinks and hops by day, and a small dot circles it."></canvas></div>
@@ -278,6 +280,25 @@
       </section>
 
       <!-- ================= SETTINGS ================= -->
+      <section id="view-games" data-page="games" hidden>
+        <header class="page-head"><h1>Games</h1><p class="sub">Quick games for a break. Your best scores are saved with the rest of your data.</p></header>
+        <div class="stack">
+          <div class="seg" id="game-pick" role="group" aria-label="Game">
+            <button type="button" data-game="snake">Snake</button>
+            <button type="button" data-game="bricks">Bricks</button>
+            <button type="button" data-game="pong">Pong</button>
+            <button type="button" data-game="gridfill">Gridfill</button>
+            <button type="button" data-game="sudoku">Sudoku</button>
+          </div>
+          <div class="block game-box">
+            <div class="game-bar"><span id="game-score"></span><span id="game-best"></span></div>
+            <canvas id="game-cv" aria-label="Game board"></canvas>
+            <div class="game-ctrls" id="game-ctrls"></div>
+          </div>
+          <p class="sub" id="game-help"></p>
+        </div>
+      </section>
+
       <section id="view-settings" data-page="settings" hidden>
         <header class="page-head"><h1>Settings</h1></header>
         <div class="stack">
@@ -461,6 +482,7 @@
 </dialog>
 
 <script src="sprites.js"></script>
+<script src="games.js"></script>
 <script>
 (function () {
   'use strict';
@@ -469,7 +491,7 @@
   var BOARDS = ['', 'AQA', 'Edexcel', 'OCR', 'WJEC Eduqas', 'WJEC', 'CCEA', 'Other'];
   var DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var LEVELS = ['Not started', 'Shaky', 'Getting there', 'Confident', 'Nailed it'];
-  var VIEWS = ['study', 'tasks', 'topics', 'plan', 'orbit', 'grades', 'stats', 'settings'];
+  var VIEWS = ['study', 'tasks', 'topics', 'plan', 'orbit', 'grades', 'stats', 'games', 'settings'];
   var TILES = 60;   // timer ring: one square tile per minute-mark
   var introUntil = Date.now() + 900; // bars fill in once on first render only
 
@@ -635,8 +657,8 @@
       subjects: subjects.map(function (n, i) { return { id: uid(), name: n, c: i % 6, board: n === 'Biology' || n === 'Chemistry' || n === 'Physics' ? 'OCR' : '' }; }),
       activities: acts.map(function (n) { return { id: uid(), name: n }; }),
       tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(), plan: [], habits: [],
-      settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length },
-      ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', subjectsV2: '0' },
+      settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length, gsnake: 0, gbricks: 0, gpong: 0, ggridfill: 0, gsudoku: 0 },
+      ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', subjectsV2: '0', game: 'snake' },
       timer: null
     };
   }
@@ -670,6 +692,12 @@
     return base;
   }
   var S = load();
+  window.orbitGames.init({
+    best: function (g) { return S.settings['g' + g] || 0; },
+    save: function (g, v) { S.settings['g' + g] = v; persist(); },
+    game: function () { return S.ui.game; },
+    setGame: function (g) { if (S.ui.game !== g) { S.ui.game = g; persist(); } }
+  });
   var storageOk = true;
   function persist() {
     S.timer = T;
@@ -1403,6 +1431,7 @@
     if (v === 'grades') renderGrades();
     if (v === 'settings') renderSettings();
     if (v === 'study') renderToday();
+    if (v === 'games') window.orbitGames.show(); else window.orbitGames.hide();
     updateClock();
     persist();
     window.scrollTo(0, 0);

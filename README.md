@@ -30,6 +30,7 @@ If it helps your revision, a star on this page helps other students find it.
 | **Habits** | Daily habits and a five-week heat map. |
 | **Grades** | A tab for each subject, with target grades. |
 | **Stats** | Daily and weekly totals. |
+| **Games** | Snake, Bricks, Pong, Gridfill and Sudoku for breaks, with best scores saved. |
 
 Study streaks count a day once you reach 30 minutes. There are four colour themes, and `?` shows the keyboard shortcuts.
 
