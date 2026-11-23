@@ -1729,7 +1729,7 @@
   }
   function wind(t) { var g = Math.pow(Math.max(0, Math.sin(t / 5200)), 6) * 1.6; return 0.45 * Math.sin(t / 2300) + 0.3 * Math.sin(t / 870 + 1.3) + g; }
   function drawTree(t, move) {
-    var g = fitCanvas($('tree')), c = g.c, T = 4, cols = Math.floor(g.w / T), rows = Math.floor(g.h / T);
+    var g = fitCanvas($('tree')), c = g.c, T = Math.max(2, Math.min(4, Math.floor(g.h / 54))), cols = Math.floor(g.w / T), rows = Math.floor(g.h / T);
     if (!side.tree || side.tree.cols !== cols || side.tree.rows !== rows) side.tree = buildTree(cols, rows);
     var tr = side.tree, wv = wind(t), ox = (g.w - cols * T) / 2;
     drawSky(c, g.w, g.h, T, t);

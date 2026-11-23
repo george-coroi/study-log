@@ -451,3 +451,17 @@ kbd { display: inline-block; min-width: 1.7em; padding: 2px 6px; text-align: cen
 .game-ctrls { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; }
 .game-ctrls .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
 #view-games .stack { grid-template-columns: minmax(0, 1fr); }
+
+/* Pixel side panel fits the window height exactly: the tree, garden and zoo pictures stretch or shrink
+   to share whatever height is left, so nothing needs scrolling (scrolls only if the window is tiny). */
+.side-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }   /* minmax(0): a canvas can't push the panel wider */
+@media (min-width: 1240px) {
+  html:not([data-look="minimal"]) .side { display: flex; flex-direction: column; align-items: stretch; gap: var(--s-2); padding-bottom: var(--s-4); }
+  html:not([data-look="minimal"]) .side > * { flex: none; min-width: 0; }
+  html:not([data-look="minimal"]) .side > :is(.tree-card, .side-card:has(#garden), .side-card:has(#zoo)) { display: flex; flex-direction: column; min-height: 0; }
+  html:not([data-look="minimal"]) .side > .tree-card { flex: 230 1 0; min-height: 124px; }   /* 124: the whole tree still fits at its smallest pixel size */
+  html:not([data-look="minimal"]) .side > .side-card:has(#garden) { flex: 96 1 0; min-height: 80px; }
+  html:not([data-look="minimal"]) .side > .side-card:has(#zoo) { flex: 190 1 0; min-height: 120px; }
+  html:not([data-look="minimal"]) .side :is(#tree, #garden, #zoo) { flex: 1 1 0; height: auto; min-height: 0; }
+  html:not([data-look="minimal"]) #zoo-note { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
