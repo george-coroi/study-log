@@ -598,8 +598,6 @@
     'German': [
       ['1', 'Thematic contexts (1GN1)', [['1.1', 'My personal world'], ['1.2', 'Lifestyle and wellbeing'], ['1.3', 'My neighbourhood'], ['1.4', 'Media and technology'], ['1.5', 'Studying and my future'], ['1.6', 'Travel and tourism']]],
       ['2', 'Subjects to talk and write about', [['2.1', 'Family, friends and relationships'], ['2.2', 'Equality'], ['2.3', 'Physical and mental well-being'], ['2.4', 'Food and drink'], ['2.5', 'Sports'], ['2.6', 'Transport'], ['2.7', 'The natural world and environmental issues'], ['2.8', 'Future opportunities: work and travel'], ['2.9', 'School'], ['2.10', 'Places in town and shopping'], ['2.11', 'Tourist attractions and accommodation'], ['2.12', 'Social media and gaming'], ['2.13', 'Music, TV and film']]],
-      ['3', 'Papers and skills', [['3.1', 'Speaking: read aloud and unprepared questions'], ['3.2', 'Speaking: role play'], ['3.3', 'Speaking: picture task and conversation'], ['3.4', 'Listening, including dictation'], ['3.5', 'Reading and translation into English'], ['3.6', 'Writing and translation into German'], ['3.7', 'Vocabulary: 1,700 words (1,200 plus 500 extra)']]],
-      ['4', 'Grammar (grouped as a study guide)', [['4.1', 'Cases: nominative, accusative, dative, genitive'], ['4.2', 'Articles, plurals and adjective endings'], ['4.3', 'Pronouns'], ['4.4', 'Word order: verb second, subordinate clauses, time-manner-place'], ['4.5', 'Present tense, separable and modal verbs'], ['4.6', 'Perfect tense with haben and sein'], ['4.7', 'Imperfect tense'], ['4.8', 'Future with werden'], ['4.9', 'Conditional: würde, hätte, wäre'], ['4.10', 'Imperative'], ['4.11', 'Comparatives and superlatives'], ['4.12', 'Prepositions and their cases'], ['4.13', 'Negatives and questions']]]
     ],
     'Japanese': [
       ['T1', 'Theme 1: Identity and culture', [['T1.1', 'Who am I?'], ['T1.2', 'Daily life'], ['T1.3', 'Cultural life']]],
@@ -607,9 +605,6 @@
       ['T3', 'Theme 3: School', [['T3.1', 'What school is like'], ['T3.2', 'School activities']]],
       ['T4', 'Theme 4: Future aspirations, study and work', [['T4.1', 'Using languages beyond the classroom'], ['T4.2', 'Ambitions'], ['T4.3', 'Work']]],
       ['T5', 'Theme 5: International and global dimension', [['T5.1', 'Bringing the world together'], ['T5.2', 'Environmental issues']]],
-      ['W', 'Scripts', [['W1', 'Hiragana'], ['W2', 'Katakana'], ['W3', 'Kanji from the specification list']]],
-      ['S', 'Papers and skills', [['S1', 'Listening'], ['S2', 'Speaking: role play'], ['S3', 'Speaking: picture task'], ['S4', 'Speaking: conversation on two themes'], ['S5', 'Reading and translation into English'], ['S6', 'Writing and translation into Japanese'], ['S7', 'Vocabulary: high-frequency and topic language']]],
-      ['G', 'Grammar (grouped as a study guide)', [['G1', 'Particles'], ['G2', 'Verbs: masu form, plain form and te-form'], ['G3', 'Past and negative forms'], ['G4', 'i- and na-adjectives'], ['G5', 'Counters, numbers, dates and time'], ['G6', 'Giving and receiving'], ['G7', 'Wanting, can and must'], ['G8', 'Conditionals: tara and ba'], ['G9', 'Comparisons'], ['G10', 'Joining sentences and giving reasons']]]
     ],
     'Italian': [
       ['T1', 'Theme 1: Identity and culture', [['T1.1', 'Who am I?'], ['T1.2', 'Daily life'], ['T1.3', 'Cultural life']]],
@@ -659,8 +654,8 @@
     'History': 'AQA GCSE History 8145. Your four options: Germany 1890–1945 and East–West 1945–72 (Paper 1), Health and the people and Elizabethan England (Paper 2). Part titles are AQA’s; some bullets are shortened.',
     'Geography': 'AQA GCSE Geography 8035. Section numbers are the specification’s own; the urban, economic and skills items are its key ideas, shortened. Your school picks the options: hot deserts or cold environments, two of coasts, rivers and glacial, and one of food, water and energy.',
     'Business': 'AQA GCSE Business 8132. Section numbers are the specification’s own. Paper 1 covers 3.1 to 3.4 (operations and people); Paper 2 covers 3.1, 3.2, 3.5 and 3.6 (marketing and finance).',
-    'German': 'Pearson Edexcel GCSE German 1GN1, Higher tier (first assessed 2026). The specification gives six contexts and a loose list of subjects, not official sub-topics, so the other groups are a study guide.',
-    'Japanese': 'Pearson Edexcel GCSE Japanese 1JA0, Higher tier. The themes and topics are the specification’s own; scripts, skills and grammar are grouped as a study guide.',
+    'German': 'Pearson Edexcel GCSE German 1GN1, Higher tier (first assessed 2026). The six thematic contexts and the subjects to talk and write about are the specification’s own.',
+    'Japanese': 'Pearson Edexcel GCSE Japanese 1JA0, Higher tier. The five themes and their topics are the specification’s own.',
     'Design and Technology': 'AQA GCSE Design and Technology 8552. Section numbers are the specification’s own. Paper 1 covers 3.1 to 3.3; the NEA is the coursework project.'
   };
   var LISTS = {};
@@ -681,7 +676,8 @@
   }
   // Ids of the first, unofficial lists (Maths MA1.., Further Maths FM1.., Computer Science CS1.., French FR1.., Italian IT1..). Dropped when nothing in them was rated.
   var RETIRED = ['MA1', 'MA2', 'MA3', 'MA4', 'MA5', 'MA6', 'FM1', 'FM2', 'FM3', 'FM4', 'FM5', 'CS1', 'CS2', 'FR1', 'FR2', 'FR3', 'FR4', 'FR5', 'IT1', 'IT2', 'IT3', 'IT4', 'IT5',
-    'MA-N1–9', 'MA-N10–12', 'MA-N13–16', 'MA-A1–7', 'MA-A8–16', 'MA-A17–22', 'MA-A23–25', 'MA-R1–16', 'MA-G1–13', 'MA-G14–23', 'MA-G24–25', 'MA-P1–9', 'MA-S1–6'];
+    'MA-N1–9', 'MA-N10–12', 'MA-N13–16', 'MA-A1–7', 'MA-A8–16', 'MA-A17–22', 'MA-A23–25', 'MA-R1–16', 'MA-G1–13', 'MA-G14–23', 'MA-G24–25', 'MA-P1–9', 'MA-S1–6',
+    'DE-3', 'DE-4', 'JA-W', 'JA-S', 'JA-G'];   // German and Japanese skills/grammar groups, removed: themes only
   function addMissingLists(st) {   // saves from before a subject's list existed get it added; ratings already saved are left alone
     if (!Array.isArray(st.modules)) st.modules = [];
     st.modules = st.modules.filter(function (m) { return RETIRED.indexOf(m.id) < 0 || (m.topics || []).some(function (t) { return t.level > 0 || t.revised; }); });
