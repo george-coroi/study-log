@@ -661,15 +661,17 @@
   }
 
   /* ---------- state ---------- */
+  // Subjects added in Nov 2026, with their exam boards (Computer Science was already on the list and gets its board).
+  var NEW_BOARDS = { 'Geography': 'AQA', 'Business': 'AQA', 'Japanese': 'Edexcel', 'German': 'Edexcel', 'Computer Science': 'Edexcel' };
   function defaults() {
     var subjects = ['Maths', 'Further Maths', 'English Literature', 'English Language', 'Italian', 'French', 'History',
-      'Design and Technology', 'Computer Science', 'Biology', 'Physics', 'Chemistry'];
+      'Design and Technology', 'Computer Science', 'Biology', 'Physics', 'Chemistry', 'Geography', 'Business', 'Japanese', 'German'];
     var acts = ['Coursework', 'Revision', 'Practice questions', 'Past papers', 'Homework'];
     return {
-      subjects: subjects.map(function (n, i) { return { id: uid(), name: n, c: i % 6, board: n === 'Biology' || n === 'Chemistry' || n === 'Physics' ? 'OCR' : '' }; }),
+      subjects: subjects.map(function (n, i) { return { id: uid(), name: n, c: i % 6, board: n === 'Biology' || n === 'Chemistry' || n === 'Physics' ? 'OCR' : (NEW_BOARDS[n] || '') }; }),
       activities: acts.map(function (n) { return { id: uid(), name: n }; }),
       tasks: [], chores: [], grades: [], targets: {}, sessions: [], modules: seedModules(), plan: [], habits: [],
-      settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, colourSeq: subjects.length, gsnake: 0, gbricks: 0, gpong: 0, ggridfill: 0, gsudoku: 0 },
+      settings: { focus: 25, short: 5, long: 15, every: 4, timerMinutes: 45, staleDays: 14, goalMinutes: 120, subjectsV3: 0, colourSeq: subjects.length, gsnake: 0, gbricks: 0, gpong: 0, ggridfill: 0, gsudoku: 0 },
       ui: { mode: 'pomodoro', subjectId: '', activityId: '', view: 'study', topicSubject: 'Biology', topicFilter: 'all', theme: 'system', collapsed: '0', animals: 'all', taskList: 'school', volume: '40', gradeSubject: 'all', palette: 'night', look: 'pixel', subjectsV2: '0', game: 'snake' },
       timer: null
     };
@@ -678,6 +680,15 @@
     addMissingLists(st);
     st.habits = (st.habits || []).filter(function (x) { return x && typeof x.id === 'string' && typeof x.name === 'string' && Array.isArray(x.days) && Array.isArray(x.done); });
     st.subjects.forEach(function (s, i) { if (typeof s.c !== 'number') s.c = i % 6; });
+    // One-time (the flag syncs with settings): add the new subjects and fill in their boards; a subject deleted later stays deleted.
+    if (!st.settings.subjectsV3) {
+      Object.keys(NEW_BOARDS).forEach(function (n) {
+        var have = st.subjects.filter(function (x) { return x.name === n; })[0];
+        if (!have) st.subjects.push({ id: uid(), name: n, c: (st.settings.colourSeq++) % 6, board: NEW_BOARDS[n] });
+        else if (!have.board) have.board = NEW_BOARDS[n];
+      });
+      st.settings.subjectsV3 = 1;
+    }
   }
   function load() {
     var base = defaults();
@@ -2439,6 +2450,7 @@
     ['subjects', 'activities', 'tasks', 'chores', 'grades', 'sessions', 'modules', 'plan', 'habits'].forEach(function (k) { if (Array.isArray(d[k])) S[k] = d[k]; });
     if (d.targets && typeof d.targets === 'object' && !Array.isArray(d.targets)) S.targets = d.targets;
     if (d.settings) Object.keys(S.settings).forEach(function (k) { if (typeof d.settings[k] === 'number') S.settings[k] = d.settings[k]; });
+    if (!d.settings || typeof d.settings.subjectsV3 !== 'number') S.settings.subjectsV3 = 0;   // an older cloud copy: run the new-subjects step on it too
     normalise(S);
     persist(); fillSelects(); renderAll(); renderSettings();
   };
